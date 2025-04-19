@@ -18,5 +18,7 @@ public class Employee {
     @NotEmpty   // 字符串非空
     @Email  // 邮箱格式校验
     private String email;   // 员工邮箱
+
+    @NotEmpty // 字符串非空
     private String phoneNumber; // 员工手机号
 }

@@ -18,9 +18,11 @@ public class Customer {
     @NotEmpty // 字符串非空
     @Email  // 邮箱格式校验
     private String email;   // 邮箱
+
+    @NotEmpty // 字符串非空
     private String phoneNumber; // 手机号
 
     @NotNull    // 整形非空
-    private Integer isVerified; // 是否通过管理员审核
+    private Integer isVerified = 0; // 是否通过管理员审核，默认值为0
 
 }

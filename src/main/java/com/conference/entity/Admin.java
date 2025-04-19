@@ -18,5 +18,6 @@ public class Admin {
     @NotEmpty   // 字符串非空
     private String email;   // 邮箱
 
+    @NotEmpty   // 字符串非空
     private String phoneNumber; // 手机号
 }

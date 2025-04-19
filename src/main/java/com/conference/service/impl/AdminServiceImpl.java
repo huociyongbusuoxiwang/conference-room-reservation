@@ -17,6 +17,12 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
+    public Admin findByUserName(String username) {
+        Admin admin = adminMapper.findByUsername(username);
+        return admin;
+    }
+
+    @Override
     public Result regist(Admin admin) {
         Admin admin1 = adminMapper.findByUsername(admin.getUsername()); // 查询用户名是否已存在
         if (admin1 == null){
