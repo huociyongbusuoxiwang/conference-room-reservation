@@ -5,5 +5,15 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.AdminMapper">
 
+    <!--根据用户名查询用户是否存在-->
+    <select id="findByUsername" resultType="admin">
+        select * from admin where username = #{username}
+    </select>
+
+    <!--添加管理员-->
+    <insert id="addAdmin">
+        insert into admin(username,password,name,email,phoneNumber)
+        values(#{username},#{password},#{name},#{email},#{phoneNumber})
+    </insert>
 
 </mapper>
