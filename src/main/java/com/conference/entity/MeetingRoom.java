@@ -11,7 +11,7 @@ public class MeetingRoom {
     @NotNull
     private String meetingRoomName; // 会议室名称，如"大会议室301"
     @NotNull
-    private String meetingRoomType; // 会议室类型
+    private String meetingRoomType; // 会议室类型，代指面积大小，如教室型，圆桌型等
     @NotNull
     private Integer capacity; // 会议室最大容纳人数
     @NotNull
