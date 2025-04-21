@@ -30,11 +30,22 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         return Result.ok(data);
     }
 
-
     // 增加会议室
+    @Override
+    public void addMeetingRoom(MeetingRoom meetingRoom) {
+        meetingRoomMapper.addMeetingRoom(meetingRoom);
+    }
+
 
     // 修改会议室配置信息
+    @Override
+    public void updateRoom(MeetingRoom meetingRoom) {
+        meetingRoomMapper.updateRoom(meetingRoom);
+    }
 
     // 删除会议室
-
+    @Override
+    public void deleteRoom(Integer roomId) {
+        meetingRoomMapper.deleteRoom(roomId);
+    }
 }

@@ -19,5 +19,5 @@ public class MeetingRoom {
     @NotNull
     private Double hourlyRate; // 每小时价格
     @NotNull
-    private Integer roomStatus; // 会议室当前状态（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
+    private Integer statusId; // 会议室当前状态（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
 }

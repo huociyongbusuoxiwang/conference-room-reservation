@@ -15,4 +15,40 @@
         select * from meeting_room where room_id = #{roomId}
     </select>
 
+    <!--增加会议室-->
+    <insert id="addMeetingRoom">
+        insert into meeting_room(room_id, room_name, room_type, capacity, multimedia_support, hourly_rate, status_id)
+        values(#{roomId}, #{roomName}, #{roomType}, #{capacity}, #{multimediaSupport}, #{hourlyRate}, #{status_id})
+    </insert>
+
+    <!--修改会议室配置信息-->
+    <update id="updateRoom">
+        update meeting_room
+        <set>
+            <if test="roomName != null">
+                room_name = #{roomName},
+            </if>
+            <if test="roomType != null">
+                room_type = #{roomType},
+            </if>
+            <if test="capacity != null">
+                capacity = #{capacity},
+            </if>
+            <if test="multimediaSupport != null">
+                multimedia_support = #{multimediaSupport},
+            </if>
+            <if test="hourlyRate != null">
+                hourly_rate = #{hourlyRate},
+            </if>
+            <if test="statusId != null">
+                status_id = #{statusId},
+            </if>
+        </set>
+    </update>
+
+    <!--删除会议室-->
+    <delete id="deleteRoom">
+        delete from meeting_room where room_id = #{roomId}
+    </delete>
+
 </mapper>

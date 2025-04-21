@@ -1,5 +1,6 @@
 package com.conference.service;
 
+import com.conference.entity.MeetingRoom;
 import com.conference.utils.Result;
 
 public interface MeetingRoomService {
@@ -11,8 +12,12 @@ public interface MeetingRoomService {
     Result findByRoomId(Integer roomId);
 
     // 增加会议室
+    void addMeetingRoom(MeetingRoom meetingRoom);
 
     // 修改会议室配置信息
+    void updateRoom(MeetingRoom meetingRoom);
 
     // 删除会议室
+    void deleteRoom(Integer roomId);
+
 }
