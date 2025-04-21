@@ -22,7 +22,7 @@ public class Customer {
     @NotEmpty // 字符串非空
     private String phoneNumber; // 手机号
 
-    @NotNull    // 整形非空
+    // 不设置为非空，仅在退款申请时设置
     private Integer isVerified = 0; // 是否通过管理员审核，默认值为0
 
 }

@@ -5,5 +5,17 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.EmployeeMapper">
 
+    <!--根据用户名查询用户是否存在-->
+    <select id="findByUsername" resultType="employee">
+        select * from employee where username = #{username}
+    </select>
+
+    <!--添加员工-->
+    <insert id="addEmployee">
+        insert into employee(username, password, name, email, phoneNumber)
+        values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
+    </insert>
+
+
 
 </mapper>

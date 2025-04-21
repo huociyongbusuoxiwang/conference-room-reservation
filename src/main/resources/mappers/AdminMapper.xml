@@ -12,8 +12,8 @@
 
     <!--添加管理员-->
     <insert id="addAdmin">
-        insert into admin(username,password,name,email,phoneNumber)
-        values(#{username},#{password},#{name},#{email},#{phoneNumber})
+        insert into admin(username, password, name, email, phoneNumber)
+        values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
     </insert>
 
 </mapper>

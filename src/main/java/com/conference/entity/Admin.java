@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Admin {
     @NotNull    // 整形非空
-    private Integer userId; // 管理员编号
+    private Integer adminId; // 管理员编号
 
     private String username;    // 登录用户名
     private String password;    // 密码
