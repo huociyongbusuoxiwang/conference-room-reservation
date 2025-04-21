@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class MeetingRoom {
     @NotNull
-    private Integer meetingRoomId; // 会议室编号
+    private Integer roomId; // 会议室编号
     @NotNull
-    private String meetingRoomName; // 会议室名称，如"大会议室301"
+    private String roomName; // 会议室名称，如"大会议室301"
     @NotNull
-    private String meetingRoomType; // 会议室类型，代指面积大小，如教室型，圆桌型等
+    private String roomType; // 会议室类型，代指面积大小，如教室型，圆桌型等
     @NotNull
     private Integer capacity; // 会议室最大容纳人数
     @NotNull
@@ -19,5 +19,5 @@ public class MeetingRoom {
     @NotNull
     private Double hourlyRate; // 每小时价格
     @NotNull
-    private Integer meetingRoomStatus; // 会议室当前状态（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
+    private Integer roomStatus; // 会议室当前状态（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
 }

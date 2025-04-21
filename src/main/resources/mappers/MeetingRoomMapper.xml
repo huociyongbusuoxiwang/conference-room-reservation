@@ -5,5 +5,14 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.MeetingRoomMapper">
 
+    <!--查询所有会议室数据-->
+    <select id="list" resultType="meetingRoom">
+        select * from meeting_room
+    </select>
+
+    <!--根据roomId查询会议室信息-->
+    <select id="findByRoomId" resultType="meetingRoom">
+        select * from meeting_room where room_id = #{roomId}
+    </select>
 
 </mapper>
