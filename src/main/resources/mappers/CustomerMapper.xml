@@ -5,9 +5,14 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.CustomerMapper">
 
-    <!--根据用户名查询用户是否存在-->
+    <!--根据用户名查询用户信息-->
     <select id="findByUsername" resultType="customer">
         select * from customer where username = #{username}
+    </select>
+
+    <!--根据客户id查询用户信息-->
+    <select id="findByCustomerId" resultType="customer">
+        select * from customer where customerId = #{customerId}
     </select>
 
     <!--添加客户-->
@@ -15,5 +20,35 @@
         insert into customer(username, password, name, companyName, email, phoneNumber)
         values(#{username}, #{password}, #{name}, #{companyName}, #{email}, #{phoneNumber})
     </insert>
+
+    <!--根据id删除客户-->
+    <delete id="deleteCustomer">
+        delete from customer where customerId = #{customerId}
+    </delete>
+
+    <!--修改客户信息-->
+    <update id="updateCustomer">
+        update customer
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="companyName != null">
+                companyName = #{companyName},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber = #{phoneNumber}
+            </if>
+        </set>
+    </update>
 
 </mapper>

@@ -113,7 +113,7 @@ public class EmployeeController {
         return Result.ok(null);
     }
 
-    // 删除员工
+    // 根据id删除员工
     @DeleteMapping
     public Result deleteEmployee(Integer employeeId){
         employeeService.deleteEmployee(employeeId);

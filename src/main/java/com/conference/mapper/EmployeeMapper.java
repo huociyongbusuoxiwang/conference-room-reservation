@@ -17,7 +17,7 @@ public interface EmployeeMapper {
     // 修改员工信息
     void updateEmployee(Employee employee);
 
-    // 删除员工
+    // 根据id删除员工
     void deleteEmployee(Integer employeeId);
 
 }

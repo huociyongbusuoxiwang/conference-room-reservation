@@ -36,4 +36,22 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    // 根据id查询客户信息
+    @Override
+    public Customer findByCustomerId(Integer customerId) {
+        return customerMapper.findByCustomerId(customerId);
+    }
+
+
+    // 修改客户信息
+    @Override
+    public void updateCustomer(Customer customer) {
+        customerMapper.updateCustomer(customer);
+    }
+
+    // 根据id删除客户
+    @Override
+    public void deleteCustomer(Integer customerId) {
+        customerMapper.deleteCustomer(customerId);
+    }
 }

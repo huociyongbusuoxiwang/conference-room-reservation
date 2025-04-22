@@ -27,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.findByEmployeeId(employeeId);
     }
 
+    // 员工注册 - 添加员工
     @Override
     public Result regist(Employee employee) {
         // 查询用户名是否已存在
@@ -48,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.updateEmployee(employee);
     }
 
-    // 删除员工
+    // 根据id删除员工
     @Override
     public void deleteEmployee(Integer employeeId) {
         employeeMapper.deleteEmployee(employeeId);

@@ -8,10 +8,7 @@ import com.conference.utils.Result;
 import com.conference.utils.ResultCodeEnum;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +71,7 @@ public class CustomerController {
         return Result.build(null, ResultCodeEnum.PASSWORD_ERROR);
     }
 
-    /**用户注册
+    /**用户注册 - 添加用户
      * url地址：customer/regist
      * 请求方式：POST
      * 请求参数：
@@ -100,5 +97,26 @@ public class CustomerController {
     @PostMapping("regist")
     public Result regist(@RequestBody Customer customer){
         return customerService.regist(customer);
+    }
+
+    // 根据id查询客户信息
+    @PostMapping("customerDetail")
+    public Result customerDetail(Integer customerId){
+        Customer customer = customerService.findByCustomerId(customerId);
+        return Result.ok(customer);
+    }
+
+    // 修改客户信息
+    @PostMapping
+    public Result updateCustomer(@RequestBody Customer customer){
+        customerService.updateCustomer(customer);
+        return Result.ok(null);
+    }
+
+    // 根据id删除客户
+    @DeleteMapping
+    public Result deleteCustomer(Integer customerId){
+        customerService.deleteCustomer(customerId);
+        return Result.ok(null);
     }
 }
