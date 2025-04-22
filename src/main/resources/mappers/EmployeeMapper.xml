@@ -5,9 +5,14 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.EmployeeMapper">
 
-    <!--根据用户名查询用户是否存在-->
+    <!--根据用户名查询用户信息-->
     <select id="findByUsername" resultType="employee">
         select * from employee where username = #{username}
+    </select>
+
+    <!--根据用户编号查询用户信息-->
+    <select id="findByEmployeeId" resultType="employee">
+        select * from employee where employeeId = #{employeeId}
     </select>
 
     <!--添加员工-->
@@ -16,6 +21,31 @@
         values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
     </insert>
 
+    <!--修改员工信息-->
+    <update id="updateEmployee">
+        update employee
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber = #{phoneNumber},
+            </if>
+        </set>
+    </update>
 
+    <!--删除员工-->
+    <delete id="deleteEmployee">
+        delete from employee where employeeId = #{employeeId}
+    </delete>
 
 </mapper>

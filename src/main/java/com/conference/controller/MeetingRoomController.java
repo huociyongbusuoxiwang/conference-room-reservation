@@ -25,7 +25,7 @@ public class MeetingRoomController {
 
     // 根据roomId查询会议室配置信息 - 在result返回配置信息
     @PostMapping("roomDetail")
-    public Result showRoomDetail(Integer roomId){
+    public Result<MeetingRoom> showRoomDetail(Integer roomId){
         Result result = meetingRoomService.findByRoomId(roomId);
         return result;
     }

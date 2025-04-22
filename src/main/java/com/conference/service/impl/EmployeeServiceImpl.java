@@ -21,6 +21,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.findByUsername(username);
     }
 
+    // 根据编号查询员工信息
+    @Override
+    public Employee findByEmployeeId(Integer employeeId) {
+        return employeeMapper.findByEmployeeId(employeeId);
+    }
+
     @Override
     public Result regist(Employee employee) {
         // 查询用户名是否已存在
@@ -34,5 +40,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             // 用户名已存在，则返回用户已存在的信息
             return Result.build(null, ResultCodeEnum.USERNAME_USED);
         }
+    }
+
+    // 修改员工信息
+    @Override
+    public void updateEmployee(Employee employee) {
+        employeeMapper.updateEmployee(employee);
+    }
+
+    // 删除员工
+    @Override
+    public void deleteEmployee(Integer employeeId) {
+        employeeMapper.deleteEmployee(employeeId);
     }
 }
