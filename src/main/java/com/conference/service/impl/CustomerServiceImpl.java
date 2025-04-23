@@ -5,11 +5,12 @@ import com.conference.mapper.CustomerMapper;
 import com.conference.service.CustomerService;
 import com.conference.utils.MD5Util;
 import com.conference.utils.Result;
-import com.conference.utils.ResultCodeEnum;
+import com.conference.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -21,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Result list() {
         List<Customer> customers = customerMapper.list();
-        return Result.ok(customers);
+        return Result.success(customers);
     }
 
     // 根据用户名查询用户
@@ -38,10 +39,10 @@ public class CustomerServiceImpl implements CustomerService {
             // 用户名不存在，则注册
             customer.setPassword(MD5Util.encrypt(customer.getPassword())); // 注册需要加密密码
             customerMapper.addCustomer(customer);
-            return Result.ok(null);
+            return Result.success();
         }else{
             // 用户名已存在，则返回用户已存在的信息
-            return Result.build(null, ResultCodeEnum.USERNAME_USED);
+            return Result.error("用户名已存在");
         }
     }
 
@@ -62,5 +63,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomer(Integer customerId) {
         customerMapper.deleteCustomer(customerId);
+    }
+
+    // 更新密码 - 需二次确认
+    @Override
+    public void updatePwd(String newPwd) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer customerId = (Integer) map.get("customerId");
+        // 需要将加密后的密码传入
+        customerMapper.updatePwd(MD5Util.encrypt(newPwd), customerId);
     }
 }

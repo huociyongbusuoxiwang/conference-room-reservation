@@ -3,67 +3,29 @@ package com.conference.utils;
 /**
  * 全局统一返回结果类
  */
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor  // 自动添加无参构造
+@AllArgsConstructor  // 自动添加全参构造
+@Data
 public class Result<T> {
-    // 返回码
-    private Integer code;
-    // 返回消息
-    private String message;
-    // 返回数据
-    private T data;
-    public Result(){}
-    // 返回数据
-    protected static <T> Result<T> build(T data) {
-        Result<T> result = new Result<T>();
-        if (data != null)
-            result.setData(data);
-        return result;
+    private Integer code;//业务状态码  0-成功  1-失败
+    private String message;//提示信息
+    private T data;//响应数据
+
+    //快速返回操作成功响应结果(带响应数据)
+    public static <E> Result<E> success(E data) {
+        return new Result<>(0, "操作成功", data);
     }
-    public static <T> Result<T> build(T body, Integer code, String message) {
-        Result<T> result = build(body);
-        result.setCode(code);
-        result.setMessage(message);
-        return result;
+
+    //快速返回操作成功响应结果
+    public static Result success() {
+        return new Result(0, "操作成功", null);
     }
-    public static <T> Result<T> build(T body, ResultCodeEnum resultCodeEnum) {
-        Result<T> result = build(body);
-        result.setCode(resultCodeEnum.getCode());
-        result.setMessage(resultCodeEnum.getMessage());
-        return result;
-    }
-    /**
-     * 操作成功
-     * @param data  baseCategory1List
-     * @param <T>   泛型
-     * @return  返回成功的结果
-     */
-    public static<T> Result<T> ok(T data){
-        Result<T> result = build(data);
-        return build(data, ResultCodeEnum.SUCCESS);
-    }
-    public Result<T> message(String msg){
-        this.setMessage(msg);
-        return this;
-    }
-    public Result<T> code(Integer code){
-        this.setCode(code);
-        return this;
-    }
-    public Integer getCode() {
-        return code;
-    }
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
-    public T getData() {
-        return data;
-    }
-    public void setData(T data) {
-        this.data = data;
+
+    public static Result error(String message) {
+        return new Result(1, message, null);
     }
 }

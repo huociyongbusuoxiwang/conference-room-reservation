@@ -5,9 +5,10 @@ import com.conference.service.EmployeeService;
 import com.conference.utils.JwtUtil;
 import com.conference.utils.MD5Util;
 import com.conference.utils.Result;
-import com.conference.utils.ResultCodeEnum;
+import com.conference.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class EmployeeController {
      *    }
      * 返回:
      *   {
-     *    "code":"200",         // 成功状态码
+     *    "code":"0",         // 成功状态码
      *    "message":"success"   // 成功状态描述
      *    "data":{
      *         "token":"... ..." // 用户id的token
@@ -56,7 +57,7 @@ public class EmployeeController {
         // 根据用户名查询用户
         Employee loginUser = employeeService.findByUsername(username);
         // 判断用户是否存在
-        if (loginUser == null) return Result.build(null, ResultCodeEnum.USERNAME_ERROR);
+        if (loginUser == null) return Result.error("用户不存在");
         // 存在则校验用户密码
         if(MD5Util.encrypt(password).equals(loginUser.getPassword())){
             // 登录成功，获取token
@@ -66,9 +67,9 @@ public class EmployeeController {
             String token = JwtUtil.genToken(claims);
 
             // 返回token
-            return Result.ok(token);
+            return Result.success(token);
         }
-        return Result.build(null, ResultCodeEnum.PASSWORD_ERROR);
+        return Result.error("密码错误");
     }
 
     /**员工注册 - 添加员工
@@ -84,7 +85,7 @@ public class EmployeeController {
      * }
      * 响应数据：
      * {
-     *    "code":"200",
+     *    "code":"0",
      *    "message":"success"
      *    "data":{}
      * }
@@ -92,7 +93,7 @@ public class EmployeeController {
      * 实现步骤:
      *   1. 将密码加密
      *   2. 将数据插入
-     *   3. 判断结果,成 返回200 失败 505
+     *   3. 判断结果,成 返回0 失败 1
      */
     @PostMapping("regist")
     public Result regist(@RequestBody Employee employee){
@@ -110,21 +111,54 @@ public class EmployeeController {
     @GetMapping("employeeDetail")
     public Result employeeDetail(Integer employeeId){
         Employee employee = employeeService.findByEmployeeId(employeeId);
-        return Result.ok(employee);
+        return Result.success(employee);
     }
 
      /** 修改员工信息 */
     @PutMapping
     public Result updateEmployee(@RequestBody Employee employee){
         employeeService.updateEmployee(employee);
-        return Result.ok(null);
+        return Result.success();
     }
 
     /** 根据id删除员工 */
     @DeleteMapping
     public Result deleteEmployee(Integer employeeId){
         employeeService.deleteEmployee(employeeId);
-        return Result.ok(null);
+        return Result.success();
     }
 
+    /** 更新密码 - 需二次确认 */
+    @PatchMapping
+    public Result updatePassword(@RequestBody Map<String, String> params){
+        // 1.校验参数
+        String oldPwd = params.get("old_pwd");  // 旧密码
+        String newPwd = params.get("new_pwd");  // 新密码
+        String rePwd = params.get("re_pwd");    // 确认密码
+
+        // (1)判断是否为空
+        if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)){
+            return Result.error("缺少必要的参数");
+        }
+
+        // (2)判断原密码是否正确
+        // 根据用户名获取原密码，再和输入的old_pwd比对
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        Employee loginUser = employeeService.findByUsername(username);
+        // 获取的密码是加密后的，需要将旧密码先加密再比较
+        if(!loginUser.getPassword().equals(MD5Util.encrypt(oldPwd))) return Result.error("原密码错误，请重新输入");
+
+        // (3)判断new_pwd和old_pwd是否相同
+        if(newPwd.equals(oldPwd)) return Result.error("新密码不能与原密码相同，请重新输入");
+
+        // (4)判断new_pwd和re_pwd是否一致
+        if(!rePwd.equals(newPwd)){
+            return Result.error("新密码和确认密码不一致，请重新输入");
+        }
+
+        // 2.密码更新
+        employeeService.updatePwd(newPwd);
+        return Result.success();
+    }
 }

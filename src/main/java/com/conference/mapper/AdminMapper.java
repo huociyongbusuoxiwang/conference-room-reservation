@@ -9,4 +9,7 @@ public interface AdminMapper {
 
     // 添加管理员
     void addAdmin(Admin admin);
+
+    // 修改密码
+    void updatePwd(String newPwd, Integer userId);
 }

@@ -1,5 +1,6 @@
 package com.conference.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ public class Admin {
     private Integer adminId; // 管理员编号
 
     private String username;    // 登录用户名
+    @JsonIgnore // springmvc将对象转换成json字符串时，忽略该字段，最后的json字符串中该属性就不会显示出来
     private String password;    // 密码
     private String name;    // 姓名
 

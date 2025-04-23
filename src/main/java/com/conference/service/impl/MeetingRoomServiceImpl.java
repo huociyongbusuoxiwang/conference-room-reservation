@@ -20,14 +20,14 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     @Override
     public Result list() {
         List<MeetingRoom> meetingRooms = meetingRoomMapper.list();
-        return Result.ok(meetingRooms);
+        return Result.success(meetingRooms);
     }
 
     // 根据roomId查询会议室信息
     @Override
     public Result findByRoomId(Integer roomId) {
-        MeetingRoom data = meetingRoomMapper.findByRoomId(roomId);
-        return Result.ok(data);
+        MeetingRoom room = meetingRoomMapper.findByRoomId(roomId);
+        return Result.success(room);
     }
 
     // 增加会议室

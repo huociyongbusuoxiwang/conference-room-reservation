@@ -16,4 +16,8 @@
         values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
     </insert>
 
+    <!--修改密码-->
+    <update id="updatePwd">
+        update admin set password = #{newPwd} where userId = #{userId}
+    </update>
 </mapper>

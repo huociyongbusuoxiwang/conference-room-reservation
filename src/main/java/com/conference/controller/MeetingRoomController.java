@@ -34,20 +34,20 @@ public class MeetingRoomController {
     @PostMapping
     public Result addMeetingRoom(@RequestBody MeetingRoom meetingRoom){
         meetingRoomService.addMeetingRoom(meetingRoom);
-        return Result.ok(null);
+        return Result.success();
     }
 
     /** 修改会议室配置信息 */
     @PutMapping
     public Result updateRoom(@RequestBody MeetingRoom meetingRoom){
         meetingRoomService.updateRoom(meetingRoom);
-        return Result.ok(null);
+        return Result.success();
     }
 
     /** 删除会议室 */
     @DeleteMapping
     public Result deleteRoom(Integer roomId){
         meetingRoomService.deleteRoom(roomId);
-        return Result.ok(null);
+        return Result.success();
     }
 }

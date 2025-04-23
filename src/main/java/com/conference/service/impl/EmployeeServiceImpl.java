@@ -5,11 +5,12 @@ import com.conference.mapper.EmployeeMapper;
 import com.conference.service.EmployeeService;
 import com.conference.utils.MD5Util;
 import com.conference.utils.Result;
-import com.conference.utils.ResultCodeEnum;
+import com.conference.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -21,7 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Result list() {
         List<Employee> employeeList = employeeMapper.list();
-        return Result.ok(employeeList);
+        return Result.success(employeeList);
     }
 
     // 根据用户名查询员工
@@ -45,10 +46,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             // 用户名不存在，则注册
             employee.setPassword(MD5Util.encrypt(employee.getPassword())); // 注册需要加密密码
             employeeMapper.addEmployee(employee);
-            return Result.ok(null);
+            return Result.success();
         }else {
             // 用户名已存在，则返回用户已存在的信息
-            return Result.build(null, ResultCodeEnum.USERNAME_USED);
+            return Result.error("用户名已存在");
         }
     }
 
@@ -62,5 +63,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployee(Integer employeeId) {
         employeeMapper.deleteEmployee(employeeId);
+    }
+
+    // 更新密码
+    @Override
+    public void updatePwd(String newPwd) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("userId");
+        // 需要将加密后的密码传入
+        employeeMapper.updatePwd(MD5Util.encrypt(newPwd), userId);
     }
 }

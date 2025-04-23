@@ -10,4 +10,7 @@ public interface AdminService {
 
     // 注册管理员
     Result regist(Admin admin);
+
+    // 更新密码
+    void updatePwd(String newPwd);
 }

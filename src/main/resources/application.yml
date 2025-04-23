@@ -4,7 +4,7 @@ server:
     uri-encoding: UTF-8
   port: 8080
   servlet:
-    context-path: /meetingroombookingmanage
+    context-path: /meetingroombookingmanage # 访问路径
 
 # 连接池配置
 spring:
@@ -22,10 +22,6 @@ spring:
   web:
     resources:
       static-locations: classpath:static/,file:static/  # 静态资源的位置
-  data:
-    redis:
-      host: localhost
-      port: 6379
 
 # mybatis配置 - 彻底抛弃mybatis-config.xml
 # 指定mapper的xml文件的位置、settings的配置、别名的配置

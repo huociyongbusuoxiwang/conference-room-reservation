@@ -53,4 +53,8 @@
         </set>
     </update>
 
+    <!--更新密码-->
+    <update id="updatePwd">
+        update customer set password = #{newPwd} where customerId = #{customerId}
+    </update>
 </mapper>
