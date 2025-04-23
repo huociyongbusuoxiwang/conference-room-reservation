@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface MeetingRoomMapper {
 
-    // 查询所有会议室数据
+    // 查询所有会议室列表
     List<MeetingRoom> list();
 
     // 根据roomId查询会议室信息

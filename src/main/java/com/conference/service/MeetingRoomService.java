@@ -5,7 +5,7 @@ import com.conference.utils.Result;
 
 public interface MeetingRoomService {
 
-    // 查询所有会议室信息
+    // 查询所有会议室列表
     Result list();
 
     // 根据roomId查询会议室信息

@@ -3,7 +3,12 @@ package com.conference.service;
 import com.conference.entity.Customer;
 import com.conference.utils.Result;
 
+import java.util.List;
+
 public interface CustomerService {
+
+    // 查询客户列表
+    Result list();
 
     // 根据用户名查询用户
     Customer findByUsername(String username);
@@ -19,5 +24,6 @@ public interface CustomerService {
 
     // 根据id删除客户
     void deleteCustomer(Integer customerId);
+
 
 }

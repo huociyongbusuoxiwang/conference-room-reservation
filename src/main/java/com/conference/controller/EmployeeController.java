@@ -99,21 +99,28 @@ public class EmployeeController {
         return employeeService.regist(employee);
     }
 
-    // 根据编号查询员工信息
-    @PostMapping("employeeDetail")
+    /** 查询员工列表 */
+    @GetMapping
+    public Result list(){
+        Result result = employeeService.list();
+        return result;
+    }
+
+    /** 根据编号查询员工信息 */
+    @GetMapping("employeeDetail")
     public Result employeeDetail(Integer employeeId){
         Employee employee = employeeService.findByEmployeeId(employeeId);
         return Result.ok(employee);
     }
 
-    // 修改员工信息
-    @PostMapping
+     /** 修改员工信息 */
+    @PutMapping
     public Result updateEmployee(@RequestBody Employee employee){
         employeeService.updateEmployee(employee);
         return Result.ok(null);
     }
 
-    // 根据id删除员工
+    /** 根据id删除员工 */
     @DeleteMapping
     public Result deleteEmployee(Integer employeeId){
         employeeService.deleteEmployee(employeeId);

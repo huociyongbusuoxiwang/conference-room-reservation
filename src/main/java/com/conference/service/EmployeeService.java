@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Pattern;
 
 public interface EmployeeService {
 
+    // 查询员工列表
+    Result list();
+
     // 根据用户名查询员工
     Employee findByUsername(String username);
 

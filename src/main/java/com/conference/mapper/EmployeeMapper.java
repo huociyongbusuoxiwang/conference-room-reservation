@@ -3,7 +3,12 @@ package com.conference.mapper;
 import com.conference.entity.Employee;
 import com.conference.utils.Result;
 
+import java.util.List;
+
 public interface EmployeeMapper {
+
+    // 查询员工列表
+    List<Employee> list();
 
     // 根据用户名查询员工信息
     Employee findByUsername(String username);
@@ -19,5 +24,6 @@ public interface EmployeeMapper {
 
     // 根据id删除员工
     void deleteEmployee(Integer employeeId);
+
 
 }

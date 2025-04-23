@@ -5,7 +5,7 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.MeetingRoomMapper">
 
-    <!--查询所有会议室数据-->
+    <!--查询所有会议室列表-->
     <select id="list" resultType="meetingRoom">
         select * from meeting_room
     </select>

@@ -8,10 +8,7 @@ import com.conference.utils.Result;
 import com.conference.utils.ResultCodeEnum;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,5 +97,11 @@ public class AdminController {
     @PostMapping("regist")
     public Result regist(@RequestBody Admin admin){
         return adminService.regist(admin);
+    }
+
+    /** 更新用户密码 - 需二次确认 */
+    @PatchMapping
+    public Result updatePassword(@RequestBody Admin admin){
+        return null;
     }
 }

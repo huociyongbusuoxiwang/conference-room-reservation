@@ -5,6 +5,11 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.EmployeeMapper">
 
+    <!--查询员工列表-->
+    <select id="list" resultType="employee">
+        select * from employee
+    </select>
+
     <!--根据用户名查询用户信息-->
     <select id="findByUsername" resultType="employee">
         select * from employee where username = #{username}
@@ -21,15 +26,12 @@
         values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
     </insert>
 
-    <!--修改员工信息-->
+    <!--修改员工基本信息-->
     <update id="updateEmployee">
         update employee
         <set>
             <if test="username != null">
                 username = #{username},
-            </if>
-            <if test="password != null">
-                password = #{password},
             </if>
             <if test="name != null">
                 name = #{name},

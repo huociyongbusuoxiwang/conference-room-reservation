@@ -9,11 +9,20 @@ import com.conference.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    // 查询员工列表
+    @Override
+    public Result list() {
+        List<Employee> employeeList = employeeMapper.list();
+        return Result.ok(employeeList);
+    }
 
     // 根据用户名查询员工
     @Override

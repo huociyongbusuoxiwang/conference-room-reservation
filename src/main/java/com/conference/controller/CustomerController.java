@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -99,21 +100,28 @@ public class CustomerController {
         return customerService.regist(customer);
     }
 
-    // 根据id查询客户信息
-    @PostMapping("customerDetail")
+    /** 查询客户列表 */
+    @GetMapping
+    public Result<List<Customer>> list(){
+        Result result = customerService.list();
+        return result;
+    }
+
+    /** 根据id查询客户信息 */
+    @GetMapping("customerDetail")
     public Result customerDetail(Integer customerId){
         Customer customer = customerService.findByCustomerId(customerId);
         return Result.ok(customer);
     }
 
-    // 修改客户信息
-    @PostMapping
+    /** 修改客户信息 */
+    @PutMapping
     public Result updateCustomer(@RequestBody Customer customer){
         customerService.updateCustomer(customer);
         return Result.ok(null);
     }
 
-    // 根据id删除客户
+    /** 根据id删除客户 */
     @DeleteMapping
     public Result deleteCustomer(Integer customerId){
         customerService.deleteCustomer(customerId);

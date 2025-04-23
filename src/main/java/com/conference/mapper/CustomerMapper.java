@@ -2,7 +2,12 @@ package com.conference.mapper;
 
 import com.conference.entity.Customer;
 
+import java.util.List;
+
 public interface CustomerMapper {
+
+    // 查询客户列表
+    List<Customer> list();
 
     // 根据用户名查询客户
     Customer findByUsername(String username);
@@ -18,4 +23,5 @@ public interface CustomerMapper {
 
     // 根据id删除客户
     void deleteCustomer(Integer customerId);
+
 }

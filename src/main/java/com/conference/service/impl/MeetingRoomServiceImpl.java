@@ -16,7 +16,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     private MeetingRoomMapper meetingRoomMapper;
 
 
-    // 查询所有会议室数据
+    // 查询所有会议室列表
     @Override
     public Result list() {
         List<MeetingRoom> meetingRooms = meetingRoomMapper.list();

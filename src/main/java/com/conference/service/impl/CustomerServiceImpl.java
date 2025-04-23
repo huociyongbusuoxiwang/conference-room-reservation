@@ -9,11 +9,20 @@ import com.conference.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
+
+    // 查询客户列表
+    @Override
+    public Result list() {
+        List<Customer> customers = customerMapper.list();
+        return Result.ok(customers);
+    }
 
     // 根据用户名查询用户
     @Override
