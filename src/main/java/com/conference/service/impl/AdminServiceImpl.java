@@ -21,7 +21,8 @@ public class AdminServiceImpl implements AdminService {
     // 根据用户名查询管理员
     @Override
     public Admin findByUsername(String username) {
-        return adminMapper.findByUsername(username);
+        Admin admin = adminMapper.findByUsername(username);
+        return admin;
     }
 
     // 管理员注册 - 由于是直接内定，所以可以不需要
@@ -30,7 +31,7 @@ public class AdminServiceImpl implements AdminService {
         Admin admin1 = adminMapper.findByUsername(admin.getUsername()); // 查询用户名是否已存在
         if (admin1 == null){
             // 用户名不存在，则注册
-            admin.setPassword(MD5Util.encrypt(admin.getPassword())); // 注册需要加密密码
+            admin.setPassword(MD5Util.encrypt(admin.getPassword()+MD5Util.KEY)); // 注册需要加密密码
             adminMapper.addAdmin(admin);
             return Result.success();
         }else {
@@ -45,6 +46,6 @@ public class AdminServiceImpl implements AdminService {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer userId = (Integer) map.get("userId");
         // 需要将加密后的密码传入
-        adminMapper.updatePwd(MD5Util.encrypt(newPwd), userId);
+        adminMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), userId);
     }
 }

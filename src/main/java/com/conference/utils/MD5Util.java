@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public final class MD5Util {
 
-    private static final String KEY = "KEY";
+    public static final String KEY = "KEY";
 
     public static void main(String[] args) {
         String password = "123456";

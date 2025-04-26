@@ -22,7 +22,7 @@
 
     <!--添加员工-->
     <insert id="addEmployee">
-        insert into employee(username, password, name, email, phoneNumber)
+        insert into employee(username, password, name, email, phone_number)
         values(#{username}, #{password}, #{name}, #{email}, #{phoneNumber})
     </insert>
 

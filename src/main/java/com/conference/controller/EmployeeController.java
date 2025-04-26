@@ -59,7 +59,7 @@ public class EmployeeController {
         // 判断用户是否存在
         if (loginUser == null) return Result.error("用户不存在");
         // 存在则校验用户密码
-        if(MD5Util.encrypt(password).equals(loginUser.getPassword())){
+        if(MD5Util.encrypt(password+MD5Util.KEY).equals(loginUser.getPassword())){
             // 登录成功，获取token
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", loginUser.getEmployeeId());
@@ -223,7 +223,7 @@ public class EmployeeController {
         String username = (String) map.get("username");
         Employee loginUser = employeeService.findByUsername(username);
         // 获取的密码是加密后的，需要将旧密码先加密再比较
-        if(!loginUser.getPassword().equals(MD5Util.encrypt(oldPwd))) return Result.error("原密码错误，请重新输入");
+        if(!loginUser.getPassword().equals(MD5Util.encrypt(oldPwd+MD5Util.KEY))) return Result.error("原密码错误，请重新输入");
 
         // (3)判断new_pwd和old_pwd是否相同
         if(newPwd.equals(oldPwd)) return Result.error("新密码不能与原密码相同，请重新输入");

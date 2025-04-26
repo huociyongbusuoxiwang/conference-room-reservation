@@ -22,7 +22,7 @@
 
     <!--添加客户-->
     <insert id="addCustomer">
-        insert into customer(username, password, name, companyName, email, phoneNumber)
+        insert into customer(username, password, name, company_name, email, phone_number)
         values(#{username}, #{password}, #{name}, #{companyName}, #{email}, #{phoneNumber})
     </insert>
 

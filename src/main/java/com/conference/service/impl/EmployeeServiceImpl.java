@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee1 = employeeMapper.findByUsername(employee.getUsername());
         if (employee1 == null){
             // 用户名不存在，则注册
-            employee.setPassword(MD5Util.encrypt(employee.getPassword())); // 注册需要加密密码
+            employee.setPassword(MD5Util.encrypt(employee.getPassword()+MD5Util.KEY)); // 注册需要加密密码
             employeeMapper.addEmployee(employee);
             return Result.success();
         }else {
@@ -71,6 +71,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer userId = (Integer) map.get("userId");
         // 需要将加密后的密码传入
-        employeeMapper.updatePwd(MD5Util.encrypt(newPwd), userId);
+        employeeMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), userId);
     }
 }

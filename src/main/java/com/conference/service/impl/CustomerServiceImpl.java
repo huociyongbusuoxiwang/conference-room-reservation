@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer1 = customerMapper.findByUsername(customer.getUsername());
         if(customer1 == null){
             // 用户名不存在，则注册
-            customer.setPassword(MD5Util.encrypt(customer.getPassword())); // 注册需要加密密码
+            customer.setPassword(MD5Util.encrypt(customer.getPassword()+MD5Util.KEY)); // 注册需要加密密码
             customerMapper.addCustomer(customer);
             return Result.success();
         }else{
@@ -71,6 +71,6 @@ public class CustomerServiceImpl implements CustomerService {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer customerId = (Integer) map.get("customerId");
         // 需要将加密后的密码传入
-        customerMapper.updatePwd(MD5Util.encrypt(newPwd), customerId);
+        customerMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), customerId);
     }
 }
