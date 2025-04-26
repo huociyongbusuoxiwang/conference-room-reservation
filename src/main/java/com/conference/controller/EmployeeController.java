@@ -100,35 +100,111 @@ public class EmployeeController {
         return employeeService.regist(employee);
     }
 
-    /** 查询员工列表 */
+    /** 查询员工列表
+     *  url地址：employee
+     *  请求方式：GET
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":[
+     *          employee1:{},
+     *          employee2:{},
+     *          ...
+     *      ]
+     *  }
+     */
     @GetMapping
     public Result list(){
         Result result = employeeService.list();
         return result;
     }
 
-    /** 根据编号查询员工信息 */
+    /** 根据编号查询员工信息
+     *  url地址：employee/employeeDetail
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "employeeId":员工编号
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{
+     *          "username":"员工用户名",
+     *          "name":"员工姓名",
+     *          "email":"员工邮箱",
+     *          "phoneNumber":"员工电话号码"
+     *      }
+     *  }
+     */
     @GetMapping("employeeDetail")
     public Result employeeDetail(Integer employeeId){
         Employee employee = employeeService.findByEmployeeId(employeeId);
         return Result.success(employee);
     }
 
-     /** 修改员工信息 */
+     /** 修改员工基本信息
+      *  url地址：employee
+      *  请求方式：PUT
+      *  请求参数：
+      *  {
+      *      "employeeId":员工编号,
+      *      "username":"员工用户名",
+      *      "name":"员工姓名",
+      *      "email":"员工邮箱",
+      *      "phoneNumber":"员工电话号码"
+      *  }
+      *  响应数据：
+      *  {
+      *      "code":"0",
+      *      "message":"success",
+      *      "data":{}
+      *  }
+      */
     @PutMapping
     public Result updateEmployee(@RequestBody Employee employee){
         employeeService.updateEmployee(employee);
         return Result.success();
     }
 
-    /** 根据id删除员工 */
+    /** 根据id删除员工
+     *  url地址：employee
+     *  请求方式：DELETE
+     *  请求参数：
+     *  {
+     *      "employeeId":员工编号
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{}
+     *  }
+     */
     @DeleteMapping
     public Result deleteEmployee(Integer employeeId){
         employeeService.deleteEmployee(employeeId);
         return Result.success();
     }
 
-    /** 更新密码 - 需二次确认 */
+    /** 更新密码 - 需二次确认
+     *  url地址：admin
+     *  请求方式：PATCH
+     *  请求参数：
+     *  {
+     *      "old_pwd":"原密码",
+     *      "new_pwd":"新密码",
+     *      "re_pwd":"确认密码"
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success"
+     *      "data":{}
+     *  }
+     */
     @PatchMapping
     public Result updatePassword(@RequestBody Map<String, String> params){
         // 1.校验参数

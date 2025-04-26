@@ -101,35 +101,106 @@ public class CustomerController {
         return customerService.regist(customer);
     }
 
-    /** 查询客户列表 */
+    /** 查询客户列表
+     *  url地址：customer
+     *  请求方式：GET
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":[
+     *          "customer1":{},
+     *          "customer2":{},
+     *          ...
+     *      ]
+     *  }
+     */
     @GetMapping
     public Result<List<Customer>> list(){
         Result result = customerService.list();
         return result;
     }
 
-    /** 根据id查询客户信息 */
+    /** 根据id查询客户信息
+     *  url地址：customer/customerDetail
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "customerId":客户编号
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{客户信息}
+     *  }
+     */
     @GetMapping("customerDetail")
     public Result customerDetail(Integer customerId){
         Customer customer = customerService.findByCustomerId(customerId);
         return Result.success(customer);
     }
 
-    /** 修改客户信息 */
+    /** 修改客户信息
+     *  url地址：customer
+     *  请求方式：PUT
+     *  请求参数：
+     *  {
+     *      "customerId":客户编号,
+     *      "username":"客户名",
+     *      "name":"客户姓名",
+     *      "email":"客户邮箱",
+     *      "phoneNumber":"客户电话"
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{}
+     *  }
+     */
     @PutMapping
     public Result updateCustomer(@RequestBody Customer customer){
         customerService.updateCustomer(customer);
         return Result.success();
     }
 
-    /** 根据id删除客户 */
+    /** 根据id删除客户
+     *  url地址：customer
+     *  请求方式：DELETE
+     *  请求参数：
+     *  {
+     *      "customerId":客户编号
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{}
+     *  }
+     */
     @DeleteMapping
     public Result deleteCustomer(Integer customerId){
         customerService.deleteCustomer(customerId);
         return Result.success();
     }
 
-    /** 更新密码 - 需二次确认 */
+    /** 更新密码 - 需二次确认
+     *  url地址：admin
+     *  请求方式：PATCH
+     *  请求参数：
+     *  {
+     *      "old_pwd":"原密码",
+     *      "new_pwd":"新密码",
+     *      "re_pwd":"确认密码"
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success"
+     *      "data":{}
+     *  }
+     */
     @PatchMapping
     public Result updatePassword(@RequestBody Map<String, String> params){
         // 1.校验参数

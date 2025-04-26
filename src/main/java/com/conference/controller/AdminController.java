@@ -97,7 +97,22 @@ public class AdminController {
         return adminService.regist(admin);
     }
 
-    /** 更新密码 - 需二次确认 */
+    /** 更新密码 - 需二次确认
+     *  url地址：admin
+     *  请求方式：PATCH
+     *  请求参数：
+     *  {
+     *      "old_pwd":"原密码",
+     *      "new_pwd":"新密码",
+     *      "re_pwd":"确认密码"
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success"
+     *      "data":{}
+     *  }
+     */
     @PatchMapping
     public Result updatePassword(@RequestBody Map<String, String> params){
         // 1.校验参数
