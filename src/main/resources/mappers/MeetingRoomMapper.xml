@@ -18,7 +18,7 @@
     <!--增加会议室-->
     <insert id="addMeetingRoom">
         insert into meeting_room(room_name, room_type, capacity, multimedia_support, hourly_rate, status_name)
-        values(#{roomName}, #{roomType}, #{capacity}, #{multimediaSupport}, #{hourlyRate}, #{status_name})
+        values(#{roomName}, #{roomType}, #{capacity}, #{multimediaSupport}, #{hourlyRate}, #{statusName})
     </insert>
 
     <!--修改会议室配置信息-->
@@ -44,6 +44,9 @@
                 status_name = #{statusName},
             </if>
         </set>
+        <where>
+            room_id = #{roomId}
+        </where>
     </update>
 
     <!--删除会议室-->

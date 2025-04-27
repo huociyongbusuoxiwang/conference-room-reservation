@@ -15,6 +15,8 @@ public class WebMvcConfig implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**") // 拦截所有请求
-                .excludePathPatterns("/**/login", "/**/regist"); // 登录和注册不拦截
+                .excludePathPatterns("/**/login", "/**/regist", // 登录和注册不拦截
+                        "/customer/customerDetailByUsername","/employee/employeeDetailByUsername"   // 查询用户名是否存在也不拦截
+                );
     }
 }

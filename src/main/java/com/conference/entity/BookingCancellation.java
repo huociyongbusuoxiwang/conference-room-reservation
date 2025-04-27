@@ -21,9 +21,10 @@ public class BookingCancellation {
     private String refundReason; // 取消原因
     @NotNull
     private Integer employeeId; // 审核取消申请的员工id
-    @NotNull
-    private LocalDate approvedAt;// 审核时间
 
     // 不设置为非空，仅在退款申请时设置
     private Integer isVerified = 0; // 取消的订单是否通过管理员审核，默认值为0
+
+    @NotNull
+    private LocalDate approvedAt;// 审核时间
 }
