@@ -121,7 +121,7 @@ public class EmployeeController {
     }
 
     /** 根据编号查询员工信息
-     *  url地址：employee/employeeDetail
+     *  url地址：employee/employeeDetailById
      *  请求方式：GET
      *  请求参数：
      *  {
@@ -139,9 +139,34 @@ public class EmployeeController {
      *      }
      *  }
      */
-    @GetMapping("employeeDetail")
-    public Result employeeDetail(Integer employeeId){
+    @GetMapping("employeeDetailById")
+    public Result employeeDetailById(Integer employeeId){
         Employee employee = employeeService.findByEmployeeId(employeeId);
+        return Result.success(employee);
+    }
+
+    /** 根据员工用户名查询员工信息
+     *  url地址：employee/employeeDetailByUsername
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "username":员工用户名
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{
+     *          "username":"员工用户名",
+     *          "name":"员工姓名",
+     *          "email":"员工邮箱",
+     *          "phoneNumber":"员工电话号码"
+     *      }
+     *  }
+     */
+    @GetMapping("employeeDetailByUsername")
+    public Result employeeDetailByUsername(String username){
+        Employee employee = employeeService.findByUsername(username);
         return Result.success(employee);
     }
 
@@ -220,6 +245,7 @@ public class EmployeeController {
         // (2)判断原密码是否正确
         // 根据用户名获取原密码，再和输入的old_pwd比对
         Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
         String username = (String) map.get("username");
         Employee loginUser = employeeService.findByUsername(username);
         // 获取的密码是加密后的，需要将旧密码先加密再比较
@@ -234,7 +260,7 @@ public class EmployeeController {
         }
 
         // 2.密码更新
-        employeeService.updatePwd(newPwd);
+        employeeService.updatePwd(newPwd, id);
         return Result.success();
     }
 }

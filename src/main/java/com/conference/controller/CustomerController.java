@@ -122,7 +122,7 @@ public class CustomerController {
     }
 
     /** 根据id查询客户信息
-     *  url地址：customer/customerDetail
+     *  url地址：customer/customerDetailById
      *  请求方式：GET
      *  请求参数：
      *  {
@@ -135,9 +135,28 @@ public class CustomerController {
      *      "data":{客户信息}
      *  }
      */
-    @GetMapping("customerDetail")
-    public Result customerDetail(Integer customerId){
+    @GetMapping("customerDetailById")
+    public Result customerDetailById(Integer customerId){
         Customer customer = customerService.findByCustomerId(customerId);
+        return Result.success(customer);
+    }
+
+    /** 根据客户用户名用户名查询客户信息
+     *  url地址：customer/customerDetailByUsername
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "username":客户用户名
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data":{客户信息}
+     */
+    @GetMapping("customerDetailByUsername")
+    public Result customerDetailByUsername(String username){
+        Customer customer = customerService.findByUsername(username);
         return Result.success(customer);
     }
 
@@ -147,7 +166,7 @@ public class CustomerController {
      *  请求参数：
      *  {
      *      "customerId":客户编号,
-     *      "username":"客户名",
+     *      "username":"客户用户名",
      *      "name":"客户姓名",
      *      "email":"客户邮箱",
      *      "phoneNumber":"客户电话"
@@ -161,6 +180,7 @@ public class CustomerController {
      */
     @PutMapping
     public Result updateCustomer(@RequestBody Customer customer){
+        if (customerService.findByCustomerId(customer.getCustomerId()) == null) return Result.error("用户不存在");
         customerService.updateCustomer(customer);
         return Result.success();
     }
@@ -181,6 +201,9 @@ public class CustomerController {
      */
     @DeleteMapping
     public Result deleteCustomer(Integer customerId){
+        // 判断用户是否存在
+        Customer customer = customerService.findByCustomerId(customerId);
+        if(customer == null) return Result.error("用户不存在");
         customerService.deleteCustomer(customerId);
         return Result.success();
     }
@@ -216,6 +239,7 @@ public class CustomerController {
         // (2)判断原密码是否正确
         // 根据用户名获取原密码，再和输入的old_pwd比对
         Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
         String username = (String) map.get("username");
         Customer loginUser = customerService.findByUsername(username);
         // 获取的密码是加密后的，需要将旧密码先加密再比较
@@ -230,7 +254,7 @@ public class CustomerController {
         }
 
         // 2.密码更新
-        customerService.updatePwd(newPwd);
+        customerService.updatePwd(newPwd, id);
         return Result.success();
     }
 }

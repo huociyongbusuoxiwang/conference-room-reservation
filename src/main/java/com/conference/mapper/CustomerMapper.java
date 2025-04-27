@@ -25,5 +25,5 @@ public interface CustomerMapper {
     void deleteCustomer(Integer customerId);
 
     // 更新密码 - 需二次确认
-    void updatePwd(String newPwd, Integer userId);
+    void updatePwd(String newPwd, Integer customerId);
 }

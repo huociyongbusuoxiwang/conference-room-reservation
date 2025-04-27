@@ -26,5 +26,5 @@ public interface EmployeeMapper {
     void deleteEmployee(Integer employeeId);
 
     // 更新密码
-    void updatePwd(String newPwd, Integer userId);
+    void updatePwd(String newPwd, Integer employeeId);
 }

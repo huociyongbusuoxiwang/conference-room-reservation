@@ -17,7 +17,7 @@
 
     <!--根据用户编号查询用户信息-->
     <select id="findByEmployeeId" resultType="employee">
-        select * from employee where employeeId = #{employeeId}
+        select * from employee where employee_id = #{employeeId}
     </select>
 
     <!--添加员工-->
@@ -40,18 +40,21 @@
                 email = #{email},
             </if>
             <if test="phoneNumber != null">
-                phoneNumber = #{phoneNumber},
+                phone_number = #{phoneNumber},
             </if>
         </set>
+        <where>
+            employee_id = #{employeeId}
+        </where>
     </update>
 
     <!--删除员工-->
     <delete id="deleteEmployee">
-        delete from employee where employeeId = #{employeeId}
+        delete from employee where employee_id = #{employeeId}
     </delete>
 
     <!--更新密码-->
     <update id="updatePwd">
-        update employee set password = #{newPwd} where employeeId = #{employeeId}
+        update employee set password = #{newPwd} where employee_id = #{employeeId}
     </update>
 </mapper>

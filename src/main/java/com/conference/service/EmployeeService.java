@@ -25,5 +25,5 @@ public interface EmployeeService {
     void deleteEmployee(Integer employeeId);
 
     // 更新密码
-    void updatePwd(String newPwd);
+    void updatePwd(String newPwd, Integer employeeId);
 }

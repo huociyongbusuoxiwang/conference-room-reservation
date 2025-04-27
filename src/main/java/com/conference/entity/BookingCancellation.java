@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+// 已支付费用但取消预订的订单
+
 @Data
 public class BookingCancellation {
     @NotNull
@@ -22,5 +24,6 @@ public class BookingCancellation {
     @NotNull
     private LocalDate approvedAt;// 审核时间
 
-
+    // 不设置为非空，仅在退款申请时设置
+    private Integer isVerified = 0; // 取消的订单是否通过管理员审核，默认值为0
 }

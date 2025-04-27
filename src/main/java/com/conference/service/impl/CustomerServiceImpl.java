@@ -67,9 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     // 更新密码 - 需二次确认
     @Override
-    public void updatePwd(String newPwd) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer customerId = (Integer) map.get("customerId");
+    public void updatePwd(String newPwd, Integer customerId) {
         // 需要将加密后的密码传入
         customerMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), customerId);
     }

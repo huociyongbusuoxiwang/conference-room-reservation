@@ -17,7 +17,7 @@
 
     <!--根据客户id查询用户信息-->
     <select id="findByCustomerId" resultType="customer">
-        select * from customer where customerId = #{customerId}
+        select * from customer where customer_id = #{customerId}
     </select>
 
     <!--添加客户-->
@@ -28,7 +28,7 @@
 
     <!--根据id删除客户-->
     <delete id="deleteCustomer">
-        delete from customer where customerId = #{customerId}
+        delete from customer where customer_id = #{customerId}
     </delete>
 
     <!--修改客户基本信息-->
@@ -42,19 +42,22 @@
                 name = #{name},
             </if>
             <if test="companyName != null">
-                companyName = #{companyName},
+                company_name = #{companyName},
             </if>
             <if test="email != null">
                 email = #{email},
             </if>
             <if test="phoneNumber != null">
-                phoneNumber = #{phoneNumber}
+                phone_number = #{phoneNumber}
             </if>
         </set>
+        <where>
+            customer_id = #{customerId}
+        </where>
     </update>
 
     <!--更新密码-->
     <update id="updatePwd">
-        update customer set password = #{newPwd} where customerId = #{customerId}
+        update customer set password = #{newPwd} where customer_id = #{customerId}
     </update>
 </mapper>

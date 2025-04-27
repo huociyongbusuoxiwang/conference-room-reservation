@@ -67,10 +67,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 更新密码
     @Override
-    public void updatePwd(String newPwd) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("userId");
+    public void updatePwd(String newPwd, Integer employeeId) {
         // 需要将加密后的密码传入
-        employeeMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), userId);
+        employeeMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), employeeId);
     }
 }
