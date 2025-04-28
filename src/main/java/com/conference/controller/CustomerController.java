@@ -1,6 +1,7 @@
 package com.conference.controller;
 
 import com.conference.entity.Customer;
+import com.conference.entity.Status;
 import com.conference.service.CustomerService;
 import com.conference.utils.JwtUtil;
 import com.conference.utils.MD5Util;
@@ -59,7 +60,9 @@ public class CustomerController {
         Customer loginUser = customerService.findByUsername(username);
         // 判断用户是否存在
         if (loginUser == null) return Result.error("用户不存在");
-        // 存在则校验用户密码
+        // 存在则校验账号状态 - 正常使用才可登录
+        if (!loginUser.getStatus().equals(Status.NORMAL_USING)) return Result.error("账号"+loginUser.getStatus());
+        // 状态校验完成再校验用户密码
         if(MD5Util.encrypt(password+MD5Util.KEY).equals(loginUser.getPassword())){
             // 登录成功，获取token
             Map<String, Object> claims = new HashMap<>();
@@ -141,7 +144,7 @@ public class CustomerController {
         return Result.success(customer);
     }
 
-    /** 根据客户用户名用户名查询客户信息
+    /** 根据客户用户名查询客户信息
      *  url地址：customer/customerDetailByUsername
      *  请求方式：GET
      *  请求参数：
@@ -157,6 +160,27 @@ public class CustomerController {
     @GetMapping("customerDetailByUsername")
     public Result customerDetailByUsername(String username){
         Customer customer = customerService.findByUsername(username);
+        return Result.success(customer);
+    }
+
+    /** 筛选各个状态的账号列表(方便管理员管理)
+     *  url地址：customer/customerDetailByUsername
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "status": 客户账号当前状态
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data": [
+     *          状态为status的客户账号
+     *      ]
+     */
+    @GetMapping("customerDetailByStatus")
+    public Result customerDetailByStatus(String status){
+        Customer customer = customerService.findByStatus(status);
         return Result.success(customer);
     }
 
@@ -181,7 +205,20 @@ public class CustomerController {
     @PutMapping
     public Result updateCustomer(@RequestBody Customer customer){
         if (customerService.findByCustomerId(customer.getCustomerId()) == null) return Result.error("用户不存在");
-        customerService.updateCustomer(customer);
+
+        // 获取当前登录客户的用户名
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+
+        // 若发现传入的customer对象中username字段不为空(即用户修改了用户名)，则需要管理员审核
+        if (customer.getUsername() != null){
+            customer.setStatus(Status.CHECKING);    // 状态置为审核中
+            customer.setUsername(username); // 同时保持原来的username
+            customerService.updateCustomer(customer);   // 更新客户账户的其他信息
+        }
+
+        // 若发现customer对象中username字段为空，要么是没有修改用户名，要么是管理员修改了状态
+        customerService.updateCustomer(customer); // 更新客户信息
         return Result.success();
     }
 

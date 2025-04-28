@@ -1,6 +1,7 @@
 package com.conference.controller;
 
 import com.conference.entity.Employee;
+import com.conference.entity.Status;
 import com.conference.service.EmployeeService;
 import com.conference.utils.JwtUtil;
 import com.conference.utils.MD5Util;
@@ -58,6 +59,8 @@ public class EmployeeController {
         Employee loginUser = employeeService.findByUsername(username);
         // 判断用户是否存在
         if (loginUser == null) return Result.error("用户不存在");
+        // 存在则校验账号状态 - 正常使用才可登录
+        if (!loginUser.getStatus().equals(Status.NORMAL_USING)) return Result.error("账号"+loginUser.getStatus());
         // 存在则校验用户密码
         if(MD5Util.encrypt(password+MD5Util.KEY).equals(loginUser.getPassword())){
             // 登录成功，获取token
@@ -170,6 +173,27 @@ public class EmployeeController {
         return Result.success(employee);
     }
 
+    /** 筛选各个状态的账号列表(方便管理员管理)
+     *  url地址：employee/employeeDetailByUsername
+     *  请求方式：GET
+     *  请求参数：
+     *  {
+     *      "status": 员工账号当前状态
+     *  }
+     *  响应数据：
+     *  {
+     *      "code":"0",
+     *      "message":"success",
+     *      "data": [
+     *          状态为status的员工账号
+     *      ]
+     */
+    @GetMapping("employeeDetailByStatus")
+    public Result employeeDetailByStatus(String status){
+        Employee employee = employeeService.findByStatus(status);
+        return Result.success(employee);
+    }
+
      /** 修改员工基本信息
       *  url地址：employee
       *  请求方式：PUT
@@ -190,6 +214,20 @@ public class EmployeeController {
       */
     @PutMapping
     public Result updateEmployee(@RequestBody Employee employee){
+        if (employeeService.findByEmployeeId(employee.getEmployeeId()) == null) return Result.error("用户不存在");
+
+        // 获取当前登录客户的用户名
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+
+        // 若发现传入的customer对象中username字段不为空(即用户修改了用户名)，则需要管理员审核
+        if (employee.getUsername() != null){
+            employee.setStatus(Status.CHECKING);    // 状态置为审核中
+            employee.setUsername(username); // 同时保持原来的username
+            employeeService.updateEmployee(employee);   // 更新客户账户的其他信息
+        }
+
+        // 若发现customer对象中username字段为空，要么是没有修改用户名，要么是管理员修改了状态
         employeeService.updateEmployee(employee);
         return Result.success();
     }

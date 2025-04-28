@@ -38,8 +38,8 @@ public class CustomerServiceImpl implements CustomerService {
         if(customer1 == null){
             // 用户名不存在，则注册
             customer.setPassword(MD5Util.encrypt(customer.getPassword()+MD5Util.KEY)); // 注册需要加密密码
-            customerMapper.addCustomer(customer);
-            return Result.success();
+            customerMapper.addCustomer(customer);   // 注：注册后状态默认为审核中
+            return Result.success("账号注册成功，管理员审核中");
         }else{
             // 用户名已存在，则返回用户已存在的信息
             return Result.error("用户名已存在");
@@ -52,6 +52,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.findByCustomerId(customerId);
     }
 
+    // 查询各个状态的客户信息
+    @Override
+    public Customer findByStatus(String status) {
+        return customerMapper.findByStatus(status);
+    }
 
     // 修改客户信息
     @Override

@@ -36,6 +36,9 @@
             <if test="name != null">
                 name = #{name},
             </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
             <if test="email != null">
                 email = #{email},
             </if>

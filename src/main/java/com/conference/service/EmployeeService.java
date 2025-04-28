@@ -1,5 +1,6 @@
 package com.conference.service;
 
+import com.conference.entity.Customer;
 import com.conference.entity.Employee;
 import com.conference.utils.Result;
 import jakarta.validation.constraints.Pattern;
@@ -15,6 +16,9 @@ public interface EmployeeService {
     // 根据员工编号查询员工信息
     Employee findByEmployeeId(Integer employeeId);
 
+    // 查询状态为status的员工
+    Employee findByStatus(String status);
+
     // 员工注册
     Result regist(Employee employee);
 
@@ -26,4 +30,6 @@ public interface EmployeeService {
 
     // 更新密码
     void updatePwd(String newPwd, Integer employeeId);
+
+
 }

@@ -16,6 +16,9 @@ public interface CustomerService {
     // 根据id查询客户信息
     Customer findByCustomerId(Integer customerId);
 
+    // 查询各个状态的客户信息
+    Customer findByStatus(String status);
+
     // 用户注册
     Result regist(Customer customer);
 
@@ -27,4 +30,6 @@ public interface CustomerService {
 
     // 更新密码 - 需二次确认
     void updatePwd(String newPwd, Integer customerId);
+
+
 }

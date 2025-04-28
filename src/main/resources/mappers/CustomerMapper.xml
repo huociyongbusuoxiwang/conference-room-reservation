@@ -20,6 +20,11 @@
         select * from customer where customer_id = #{customerId}
     </select>
 
+    <!--查询各个状态的客户信息-->
+    <select id="findByStatus" resultType="customer">
+        select * from customer where status = #{status}
+    </select>
+
     <!--添加客户-->
     <insert id="addCustomer">
         insert into customer(username, password, name, company_name, email, phone_number)
@@ -40,6 +45,9 @@
             </if>
             <if test="name != null">
                 name = #{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
             </if>
             <if test="companyName != null">
                 company_name = #{companyName},

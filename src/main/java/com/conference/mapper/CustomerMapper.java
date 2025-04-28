@@ -15,6 +15,9 @@ public interface CustomerMapper {
     // 根据id查询客户信息
     Customer findByCustomerId(Integer customerId);
 
+    // 查询各个状态的客户信息
+    Customer findByStatus(String status);
+
     // 添加客户 - 客户注册
     void addCustomer(Customer customer);
 
@@ -26,4 +29,5 @@ public interface CustomerMapper {
 
     // 更新密码 - 需二次确认
     void updatePwd(String newPwd, Integer customerId);
+
 }
