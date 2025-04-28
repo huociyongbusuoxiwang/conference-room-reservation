@@ -1,4 +1,6 @@
-package com.conference.entity;
+package com.conference.utils;
+
+// 状态类 - 用于维护
 
 public class Status {
 

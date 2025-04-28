@@ -1,7 +1,7 @@
 package com.conference.controller;
 
 import com.conference.entity.Employee;
-import com.conference.entity.Status;
+import com.conference.utils.Status;
 import com.conference.service.EmployeeService;
 import com.conference.utils.JwtUtil;
 import com.conference.utils.MD5Util;
