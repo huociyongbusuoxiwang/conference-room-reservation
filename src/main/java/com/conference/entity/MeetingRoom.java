@@ -1,6 +1,7 @@
 package com.conference.entity;
 
 
+import com.conference.utils.Status;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -20,11 +21,11 @@ public class MeetingRoom {
     private Integer capacity; // 会议室最大容纳人数
 
     @NotNull
-    private Boolean multimediaSupport; // 是否支持多媒体设备（若支持则多媒体设备全部支持，否则只有会议室的基础设施）
+    private Boolean multimediaSupport = false; // 是否支持多媒体设备，默认为false（若支持则多媒体设备全部支持，否则只有会议室的基础设施）
 
     @NotNull
     private Double hourlyRate; // 每小时价格
 
     @NotEmpty
-    private String statusName; // 会议室当前状态（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
+    private String statusName = Status.AVAILABLE; // 会议室当前状态，默认为空闲中（预订订单创建成功则置为“已锁定”，支付成功则置为“已被预订”）
 }

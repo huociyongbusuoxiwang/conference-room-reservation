@@ -1,6 +1,7 @@
 package com.conference.entity;
 
 
+import com.conference.utils.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -40,7 +41,7 @@ public class Booking {
     private Double totalPrice;  // 预订的总价格
 
     @NotEmpty
-    private String statusName;// 预订单状态(未支付、已支付、已完成、已取消、已退款)
+    private String statusName = Status.UNPAID; // 预订单状态((默认)未支付、已支付、已完成、已取消、已退款)
 
     @NotNull
     private Boolean paymentStatus; // 付款状态(已付款、未付款)
