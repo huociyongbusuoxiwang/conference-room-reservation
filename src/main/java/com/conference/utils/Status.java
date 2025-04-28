@@ -23,4 +23,9 @@ public class Status {
     public static final String BOOKED = "已被预订";
     public static final String UNDER_USING = "使用中";
     public static final String UNDER_REPAIR = "维护中";
+
+    // 维护状态
+    public static final String UNREPAIR = "未处理";
+    public static final String REPAIRING = "处理中";
+    public static final String REPAIRED = "已处理";
 }

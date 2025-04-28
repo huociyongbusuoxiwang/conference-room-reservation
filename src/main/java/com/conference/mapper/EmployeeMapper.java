@@ -16,6 +16,9 @@ public interface EmployeeMapper {
     // 根据编号查询员工
     Employee findByEmployeeId(Integer employeeId);
 
+    // 查询状态为status的员工
+    Employee findByStatus(String status);
+
     // 添加员工
     void addEmployee(Employee employee);
 
@@ -27,4 +30,5 @@ public interface EmployeeMapper {
 
     // 更新密码
     void updatePwd(String newPwd, Integer employeeId);
+
 }

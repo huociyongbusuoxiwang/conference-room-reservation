@@ -20,6 +20,11 @@
         select * from employee where employee_id = #{employeeId}
     </select>
 
+    <!--查询状态为status的员工-->
+    <select id="findByStatus" resultType="employee">
+        select * from employee where status = #{status}
+    </select>
+
     <!--添加员工-->
     <insert id="addEmployee">
         insert into employee(username, password, name, email, phone_number)

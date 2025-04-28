@@ -45,12 +45,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee1 == null){
             // 用户名不存在，则注册
             employee.setPassword(MD5Util.encrypt(employee.getPassword()+MD5Util.KEY)); // 注册需要加密密码
-            employeeMapper.addEmployee(employee);
-            return Result.success();
+            employeeMapper.addEmployee(employee); // 注：注册后状态默认为审核中
+            return Result.success("账号注册成功，管理员审核中");
         }else {
             // 用户名已存在，则返回用户已存在的信息
             return Result.error("用户名已存在");
         }
+    }
+
+    // 查询状态为status的员工
+    @Override
+    public Employee findByStatus(String status) {
+        return employeeMapper.findByStatus(status);
     }
 
     // 修改员工信息
