@@ -41,8 +41,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Result regist(Employee employee) {
         // 查询用户名是否已存在
-        Employee employee1 = employeeMapper.findByUsername(employee.getUsername());
-        if (employee1 == null){
+        Employee newEmployee = employeeMapper.findByUsername(employee.getUsername());
+        if (newEmployee == null){
             // 用户名不存在，则注册
             employee.setPassword(MD5Util.encrypt(employee.getPassword()+MD5Util.KEY)); // 注册需要加密密码
             employeeMapper.addEmployee(employee); // 注：注册后状态默认为审核中
@@ -55,8 +55,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 查询状态为status的员工
     @Override
-    public Employee findByStatus(String status) {
-        return employeeMapper.findByStatus(status);
+    public Result findByStatus(String status) {
+        List<Employee> employeeList = employeeMapper.findByStatus(status);
+        return Result.success(employeeList);
     }
 
     // 修改员工信息

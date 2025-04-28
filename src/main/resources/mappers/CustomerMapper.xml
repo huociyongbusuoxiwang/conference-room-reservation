@@ -43,6 +43,9 @@
             <if test="username != null">
                 username = #{username},
             </if>
+
+                check_username = #{checkUsername},
+
             <if test="name != null">
                 name = #{name},
             </if>

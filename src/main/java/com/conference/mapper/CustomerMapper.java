@@ -16,7 +16,7 @@ public interface CustomerMapper {
     Customer findByCustomerId(Integer customerId);
 
     // 查询各个状态的客户信息
-    Customer findByStatus(String status);
+    List<Customer> findByStatus(String status);
 
     // 添加客户 - 客户注册
     void addCustomer(Customer customer);

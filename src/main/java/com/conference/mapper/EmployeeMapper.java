@@ -17,7 +17,7 @@ public interface EmployeeMapper {
     Employee findByEmployeeId(Integer employeeId);
 
     // 查询状态为status的员工
-    Employee findByStatus(String status);
+    List<Employee> findByStatus(String status);
 
     // 添加员工
     void addEmployee(Employee employee);

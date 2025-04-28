@@ -179,9 +179,8 @@ public class CustomerController {
      *      ]
      */
     @GetMapping("customerDetailByStatus")
-    public Result customerDetailByStatus(String status){
-        Customer customer = customerService.findByStatus(status);
-        return Result.success(customer);
+    public Result<List<Customer>> customerDetailByStatus(String status){
+        return customerService.findByStatus(status);
     }
 
     /** 修改客户信息
@@ -204,22 +203,29 @@ public class CustomerController {
      */
     @PutMapping
     public Result updateCustomer(@RequestBody Customer customer){
-        if (customerService.findByCustomerId(customer.getCustomerId()) == null) return Result.error("用户不存在");
 
-        // 获取当前登录客户的用户名
+        // 保存要修改的账户
+        Customer newCustomer = customerService.findByCustomerId(customer.getCustomerId());
+        if (newCustomer == null) return Result.error("用户不存在");
+
+        // 获取当前登录客户的用户名，可能是管理员，也可能是用户
         Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
 
-        // 若发现传入的customer对象中username字段不为空(即用户修改了用户名)，则需要管理员审核
-        if (customer.getUsername() != null){
+        // 若此时登录的账户不是管理员，且发现传入的customer对象中username字段不为空(即用户修改了用户名)，则需要管理员审核
+        if (!username.equals("admin") && customer.getUsername() != null){
+            customer.setCheckUsername(customer.getUsername());  // 将修改的username字段保存到checkUsername字段中
             customer.setStatus(Status.CHECKING);    // 状态置为审核中
             customer.setUsername(username); // 同时保持原来的username
             customerService.updateCustomer(customer);   // 更新客户账户的其他信息
+            return Result.success("用户名修改成功，等待管理员审核");
         }
 
-        // 若发现customer对象中username字段为空，要么是没有修改用户名，要么是管理员修改了状态
+        // 若发现传入的customer对象中username字段为空，要么是没有修改用户名，要么是管理员修改了状态(即通过审核)
+        customer.setUsername(newCustomer.getCheckUsername());  // 将checkUsername字段的值赋给username字段
+        customer.setCheckUsername(null);    // 同时清空checkUsername字段的值
         customerService.updateCustomer(customer); // 更新客户信息
-        return Result.success();
+        return Result.success("信息已更新");
     }
 
     /** 根据id删除客户

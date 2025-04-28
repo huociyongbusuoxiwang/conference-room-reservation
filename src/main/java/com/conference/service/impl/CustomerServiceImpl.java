@@ -34,8 +34,8 @@ public class CustomerServiceImpl implements CustomerService {
     // 用户注册
     @Override
     public Result regist(Customer customer) {
-        Customer customer1 = customerMapper.findByUsername(customer.getUsername());
-        if(customer1 == null){
+        Customer newCustomer = customerMapper.findByUsername(customer.getUsername());
+        if(newCustomer == null){
             // 用户名不存在，则注册
             customer.setPassword(MD5Util.encrypt(customer.getPassword()+MD5Util.KEY)); // 注册需要加密密码
             customerMapper.addCustomer(customer);   // 注：注册后状态默认为审核中
@@ -54,8 +54,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     // 查询各个状态的客户信息
     @Override
-    public Customer findByStatus(String status) {
-        return customerMapper.findByStatus(status);
+    public Result findByStatus(String status) {
+        List<Customer> customers = customerMapper.findByStatus(status);
+        return Result.success(customers);
     }
 
     // 修改客户信息

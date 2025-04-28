@@ -13,6 +13,7 @@ public class Customer {
     @NotNull    // 整形非空
     private Integer customerId; // 客户编号
     private String username;    // 登录用户名
+    private String checkUsername;   // 修改后的用户名 - 默认为空，用于保存修改后的用户名
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // springmvc将对象转换成json字符串时，忽略该字段，最后的json字符串中该属性就不会显示出来
     private String password;    // 密码

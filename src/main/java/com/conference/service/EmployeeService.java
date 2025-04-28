@@ -16,8 +16,8 @@ public interface EmployeeService {
     // 根据员工编号查询员工信息
     Employee findByEmployeeId(Integer employeeId);
 
-    // 查询状态为status的员工
-    Employee findByStatus(String status);
+    // 查询状态为status的员工列表
+    Result findByStatus(String status);
 
     // 员工注册
     Result regist(Employee employee);

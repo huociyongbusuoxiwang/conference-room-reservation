@@ -17,7 +17,7 @@ public interface CustomerService {
     Customer findByCustomerId(Integer customerId);
 
     // 查询各个状态的客户信息
-    Customer findByStatus(String status);
+    Result findByStatus(String status);
 
     // 用户注册
     Result regist(Customer customer);
