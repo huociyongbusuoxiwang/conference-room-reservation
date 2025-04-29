@@ -3,6 +3,8 @@ package com.conference.service;
 import com.conference.entity.MeetingRoom;
 import com.conference.utils.Result;
 
+import java.time.LocalDate;
+
 public interface MeetingRoomService {
 
     // 查询所有会议室列表
@@ -20,4 +22,7 @@ public interface MeetingRoomService {
     // 删除会议室
     void deleteRoom(Integer roomId);
 
+    Result findAvailableRooms(LocalDate bookingDate, Integer startHour, Integer endHour, Integer capacity, Boolean multimediaSupport);
+
+    boolean isRoomAvailable(Integer roomId, LocalDate bookingDate, Integer startHour, Integer endHour);
 }

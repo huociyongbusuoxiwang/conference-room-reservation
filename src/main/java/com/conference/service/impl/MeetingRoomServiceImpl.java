@@ -7,6 +7,7 @@ import com.conference.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -47,5 +48,15 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     @Override
     public void deleteRoom(Integer roomId) {
         meetingRoomMapper.deleteRoom(roomId);
+    }
+
+    @Override
+    public Result findAvailableRooms(LocalDate bookingDate, Integer startHour, Integer endHour, Integer capacity, Boolean multimediaSupport) {
+        return null;
+    }
+
+    @Override
+    public boolean isRoomAvailable(Integer roomId, LocalDate bookingDate, Integer startHour, Integer endHour) {
+        return false;
     }
 }
