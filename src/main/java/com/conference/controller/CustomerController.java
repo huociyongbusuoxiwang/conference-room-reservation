@@ -191,6 +191,7 @@ public class CustomerController {
      *      "customerId":客户编号,
      *      "username":"客户用户名",
      *      "name":"客户姓名",
+     *      "status":"账号状态(请前端设置为仅管理员可见)",
      *      "email":"客户邮箱",
      *      "phoneNumber":"客户电话"
      *  }
