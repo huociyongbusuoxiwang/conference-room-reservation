@@ -12,5 +12,5 @@ public interface AdminService {
     Result regist(Admin admin);
 
     // 更新密码
-    void updatePwd(String newPwd);
+    void updatePwd(String newPwd, Integer userId);
 }

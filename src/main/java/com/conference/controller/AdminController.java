@@ -53,13 +53,14 @@ public class AdminController {
                         @Pattern(regexp = "^\\S{5,16}$") String password){
         // 根据用户名查询用户
         Admin loginUser = adminService.findByUsername(username);
+//        System.out.println("loginUser = " + loginUser);
         // 判断用户是否存在
         if (loginUser == null) return Result.error("用户不存在");
         // 存在则校验用户密码
         if(MD5Util.encrypt(password+MD5Util.KEY).equals(loginUser.getPassword())){
             // 登录成功，获取token
             Map<String, Object> claims = new HashMap<>();
-            claims.put("userid", loginUser.getAdminId());
+            claims.put("id", loginUser.getUserId());
             claims.put("username", loginUser.getUsername());
             String token = JwtUtil.genToken(claims);
 
@@ -128,6 +129,7 @@ public class AdminController {
         // (2)判断原密码是否正确
         // 根据用户名获取原密码，再和输入的old_pwd比对
         Map<String, Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("id");
         String username = (String) map.get("username");
         Admin loginUser = adminService.findByUsername(username);
         // 获取的密码是加密后的，需要将旧密码先加密再比较
@@ -142,7 +144,7 @@ public class AdminController {
         }
 
         // 2.密码更新
-        adminService.updatePwd(newPwd);
+        adminService.updatePwd(newPwd, userId);
         return Result.success();
     }
 }

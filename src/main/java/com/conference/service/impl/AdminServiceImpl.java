@@ -42,10 +42,7 @@ public class AdminServiceImpl implements AdminService {
 
     // 更新密码
     @Override
-    public void updatePwd(String newPwd) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("userId");
-        System.out.println("更新密码的用户id为："+userId);
+    public void updatePwd(String newPwd, Integer userId) {
         // 需要将加密后的密码传入
         adminMapper.updatePwd(MD5Util.encrypt(newPwd+MD5Util.KEY), userId);
     }

@@ -11,7 +11,7 @@ import lombok.Data;
 public class Admin {
 
     @NotNull    // 整形非空
-    private Integer adminId; // 管理员编号
+    private Integer userId; // 管理员编号
     private String username;    // 登录用户名
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // springmvc将对象转换成json字符串时，忽略该字段，最后的json字符串中该属性就不会显示出来
