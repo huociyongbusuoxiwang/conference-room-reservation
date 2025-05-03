@@ -4,6 +4,7 @@ import com.conference.entity.MeetingRoom;
 import com.conference.mapper.MeetingRoomMapper;
 import com.conference.service.MeetingRoomService;
 import com.conference.utils.Result;
+import com.conference.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,11 +53,61 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 
     @Override
     public Result findAvailableRooms(LocalDate bookingDate, Integer startHour, Integer endHour, Integer capacity, Boolean multimediaSupport) {
-        return null;
+        try {
+            // 参数校验
+            if (startHour >= endHour) {
+                return Result.error("结束时间必须晚于开始时间");
+            }
+            if (bookingDate.isBefore(LocalDate.now())) {
+                return Result.error("不能预订过去日期的会议室");
+            }
+
+            // 基础条件查询（容量、多媒体设备）
+            List<MeetingRoom> baseRooms = meetingRoomMapper.findRoomsByConditions(
+                    capacity != null ? capacity : 0,
+                    multimediaSupport != null ? multimediaSupport : false
+            );
+
+            // 过滤不可用时间段
+            List<MeetingRoom> availableRooms = baseRooms.stream()
+                    .filter(room -> {
+                        // 状态检查
+                        if (!Status.AVAILABLE.equals(room.getStatusName())) return false;
+
+                        // 时间冲突检查
+                        return !meetingRoomMapper.hasTimeConflict(
+                                room.getRoomId(),
+                                bookingDate,
+                                startHour,
+                                endHour
+                        );
+                    })
+                    .toList();
+
+            return Result.success(availableRooms);
+        } catch (Exception e) {
+            return Result.error("查询失败: " + e.getMessage());
+        }
     }
 
     @Override
     public boolean isRoomAvailable(Integer roomId, LocalDate bookingDate, Integer startHour, Integer endHour) {
-        return false;
+        try {
+            // 检查会议室状态
+            MeetingRoom room = meetingRoomMapper.findByRoomId(roomId);
+            if (room == null || !Status.AVAILABLE.equals(room.getStatusName())) {
+                return false;
+            }
+
+            // 检查时间冲突
+            return !meetingRoomMapper.hasTimeConflict(
+                    roomId,
+                    bookingDate,
+                    startHour,
+                    endHour
+            );
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

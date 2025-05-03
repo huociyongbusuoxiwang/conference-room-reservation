@@ -18,6 +18,6 @@
 
     <!--修改密码-->
     <update id="updatePwd">
-        update admin set password = #{newPwd} where userId = #{userId}
+        update admin set password = #{newPwd} where user_id = #{userId}
     </update>
 </mapper>

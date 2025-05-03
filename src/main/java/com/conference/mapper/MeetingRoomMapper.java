@@ -4,7 +4,9 @@ package com.conference.mapper;
 
 import com.conference.entity.MeetingRoom;
 import com.conference.utils.Result;
+import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -25,4 +27,13 @@ public interface MeetingRoomMapper {
     // 删除会议室
     void deleteRoom(Integer roomId);
 
+    boolean hasTimeConflict(@Param("roomId") Integer roomId,
+                            @Param("bookingDate") LocalDate bookingDate,
+                            @Param("startHour") Integer startHour,
+                            @Param("endHour") Integer endHour);
+
+    List<MeetingRoom> findRoomsByConditions(
+            @Param("minCapacity") Integer minCapacity,
+            @Param("multimediaSupport") Boolean multimediaSupport
+    );
 }

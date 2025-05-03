@@ -54,4 +54,28 @@
         delete from meeting_room where room_id = #{roomId}
     </delete>
 
+    <!-- 基础条件查询 -->
+    <select id="findRoomsByConditions" resultType="MeetingRoom">
+        SELECT * FROM meeting_room
+        WHERE
+        capacity >= #{minCapacity}
+        AND multimedia_support = #{multimediaSupport}
+    </select>
+
+    <!-- 时间冲突检查 -->
+    <select id="hasTimeConflict" resultType="boolean">
+        SELECT EXISTS(
+        SELECT 1 FROM booking b
+        WHERE
+        b.room_id = #{roomId}
+        AND DATE(b.booking_date) = #{bookingDate}
+        AND (
+        (#{startHour} BETWEEN HOUR(b.start_time) AND HOUR(b.end_time)-1)
+        OR (#{endHour}-1 BETWEEN HOUR(b.start_time) AND HOUR(b.end_time)-1)
+        OR (HOUR(b.start_time) BETWEEN #{startHour} AND #{endHour}-1)
+        )
+        )
+    </select>
+
+
 </mapper>
