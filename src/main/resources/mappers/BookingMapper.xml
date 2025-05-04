@@ -5,5 +5,30 @@
 <!-- namespace等于mapper接口类的全限定名  -->
 <mapper namespace="com.conference.mapper.BookingMapper">
 
+    <insert id="insert" parameterType="com.conference.entity.Booking">
+        INSERT INTO booking (
+        room_id,
+        customer_id,
+        start_time,
+        end_time,
+        total_hours,
+        total_price,
+        status_name,
+        payment_status,
+        created_time,
+        booking_date  <!-- 添加缺失的字段 -->
+        ) VALUES (
+        #{roomId},
+        #{customerId},
+        #{startTime},
+        #{endTime},
+        #{totalHours},
+        #{totalPrice},
+        #{statusName},
+        #{paymentStatus},
+        #{createTime},
+        #{bookingDate}  <!-- 传入参数 -->
+        )
+    </insert>
 
 </mapper>
