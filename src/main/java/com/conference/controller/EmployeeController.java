@@ -202,6 +202,7 @@ public class EmployeeController {
       *      "employeeId":员工编号,
       *      "username":"员工用户名",
       *      "name":"员工姓名",
+      *      "status":"账号状态(请前端设置为仅管理员可见)",
       *      "email":"员工邮箱",
       *      "phoneNumber":"员工电话号码"
       *  }
