@@ -186,6 +186,18 @@ public class CustomerController {
     /** 修改客户信息
      *  url地址：customer
      *  请求方式：PUT
+     *  发送请求前需要带上登录时返回的token
+     *  修改信息分为两大类：
+     *  1.客户修改：
+     *     客户修改分为两类：
+     *     (1)若客户未修改用户名：则直接更新信息
+     *     (2)若客户修改了用户名：其他信息直接更新，但是用户名需要审核
+     *         此处还设置防小人不防君子逻辑：
+     *         考虑到客户可能会在已经修改用户名并进入审核阶段的基础上，将用户名修改回原来可以正常使用的用户名，
+     *         所以当客户修改回原来的用户名之后，则会将账户状态重置为正常使用
+     *  2.管理员修改：
+     *     管理员一般只修改账户的状态，其他信息一般由客户自行修改
+     *     但后端给管理员开放上帝权限，若有需要可对客户信息直接进行修改，无需审核
      *  请求参数：
      *  {
      *      "customerId":客户编号,
@@ -213,20 +225,33 @@ public class CustomerController {
         Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
 
-        // 若此时登录的账户不是管理员，且发现传入的customer对象中username字段不为空(即用户修改了用户名)，则需要管理员审核
-        if (!username.equals("admin") && customer.getUsername() != null){
-            customer.setCheckUsername(customer.getUsername());  // 将修改的username字段保存到checkUsername字段中
-            customer.setStatus(Status.CHECKING);    // 状态置为审核中
-            customer.setUsername(username); // 同时保持原来的username
-            customerService.updateCustomer(customer);   // 更新客户账户的其他信息
-            return Result.success("用户名修改成功，等待管理员审核");
+        if (!username.equals("admin")){     // 若此时登录的账户是用户而不是管理员，则判断其是否修改用户名
+            // 若传入的用户名与原来的用户名相同
+            if(customer.getUsername().equals(username)){
+                // 若checkUsername字段不为空，则表示用户在管理员审核用户名前已经修改过用户名，但是又重新改回原来可以正常使用的用户名
+                if(newCustomer.getCheckUsername() != null) {   // 防小人不防君子逻辑
+                    customer.setStatus(Status.NORMAL_USING);    // 状态重置为正常使用
+                    customer.setCheckUsername(null);    // 将checkUsername字段重置为null
+                }
+                customerService.updateCustomer(customer); // 更新客户信息
+                return Result.success("信息已更新");
+            }else { // 若传入的用户名与原来的用户名不同则表示用户修改了用户名
+                customer.setCheckUsername(customer.getUsername());  // 将修改的username字段保存到checkUsername字段中
+                customer.setStatus(Status.CHECKING);    // 状态置为审核中
+                customer.setUsername(username); // 同时保持原来的username
+                customerService.updateCustomer(customer);   // 更新客户账户的其他信息
+                return Result.success("用户名修改成功，等待管理员审核");
+            }
+        }else { // 若此时登录的账户是管理员
+            if(newCustomer.getCheckUsername() != null) {   // 检查用户是否修改过用户名，若修改过则checkUsername应该不为空
+                customer.setUsername(newCustomer.getCheckUsername());  // 将checkUsername字段的值赋给username字段
+                customer.setCheckUsername(null);    // 前端admin传入的数据还是会有checkUsername，所以重置checkUsername字段的值
+            }
+            // 情况1：用户修改了用户名，在对上述的checkUsername字段进行操作后更新用户信息
+            // 情况2：若用户没有修改用户名，但是管理员修改了用户名，则上述的checkUsername字段为空，无需审核，直接更新信息
+            customerService.updateCustomer(customer); // 更新客户信息
+            return Result.success("信息已更新");
         }
-
-        // 若发现传入的customer对象中username字段为空，要么是没有修改用户名，要么是管理员修改了状态(即通过审核)
-        customer.setUsername(newCustomer.getCheckUsername());  // 将checkUsername字段的值赋给username字段
-        customer.setCheckUsername(null);    // 同时清空checkUsername字段的值
-        customerService.updateCustomer(customer); // 更新客户信息
-        return Result.success("信息已更新");
     }
 
     /** 根据id删除客户
