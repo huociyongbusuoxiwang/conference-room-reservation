@@ -12,9 +12,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource # 使用druid连接池
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql:///conference
+      url: jdbc:mysql://192.168.10.101:3306/conference
       username: root
-      password: wjd3396815
+      password: LGHlgh135790@
   servlet:
     multipart:
       max-file-size: 1000MB # 设置单个文件的最大上传大小为1000MB
