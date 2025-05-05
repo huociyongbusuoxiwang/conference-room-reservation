@@ -155,7 +155,7 @@ public class BookingController {
         booking.setEndTime(LocalDateTime.of(bookingDate, LocalTime.of(endHour, 0)));
         booking.setTotalHours(endHour - startHour);
 
-        // 检查会议室是否可用
+        // 检查会议室是否可用`
         if (!meetingRoomService.isRoomAvailable(
                 roomId,
                 bookingDate,
@@ -175,7 +175,7 @@ public class BookingController {
      * 请求参数：
      * {
      *     "bookingId": 1,           // 订单ID
-     *     "paymentMethod": "alipay" // 支付方式
+     *     "paymentMethod": "alipay" // 支付方式 //这里的支付方式前端可设置为微信支付和支付宝支付
      * }
      * 响应数据：
      * {
@@ -190,9 +190,9 @@ public class BookingController {
     @PostMapping("pay")
     public Result payBooking(@RequestParam Integer bookingId, @RequestParam String paymentMethod) {
         // 检查订单是否已过期
-        if (bookingService.isBookingExpired(bookingId)) {
-            return Result.error("订单已过期，请重新预订");
-        }
+//        if (bookingService.isBookingExpired(bookingId)) {
+//            return Result.error("订单已过期，请重新预订");
+//        }
 
         Result result = bookingService.payBooking(bookingId, paymentMethod);
         return result;

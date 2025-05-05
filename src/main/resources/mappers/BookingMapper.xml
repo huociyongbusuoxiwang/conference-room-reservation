@@ -15,7 +15,7 @@
         total_price,
         status_name,
         payment_status,
-        created_time,
+        create_time,
         booking_date  <!-- 添加缺失的字段 -->
         ) VALUES (
         #{roomId},
@@ -30,5 +30,28 @@
         #{bookingDate}  <!-- 传入参数 -->
         )
     </insert>
+
+    <select id="selectByCustomerId" resultType="com.conference.entity.Booking">
+        SELECT * FROM booking
+        WHERE customer_id = #{customerId}
+        ORDER BY booking_date DESC
+    </select>
+
+    <select id="selectById" resultType="com.conference.entity.Booking">
+        SELECT * FROM booking
+        WHERE booking_id = #{bookingId}
+    </select>
+
+    <update id="updateBooking" parameterType="com.conference.entity.Booking">
+        UPDATE booking
+        <set>
+            <if test="statusName != null">status_name = #{statusName},</if>
+            <if test="paymentStatus != null">payment_status = #{paymentStatus},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime}</if>
+        </set>
+        WHERE booking_id = #{bookingId}
+    </update>
 
 </mapper>

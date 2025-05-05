@@ -5,6 +5,7 @@ package com.conference.mapper;
 import com.conference.entity.MeetingRoom;
 import com.conference.utils.Result;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,4 +37,7 @@ public interface MeetingRoomMapper {
             @Param("minCapacity") Integer minCapacity,
             @Param("multimediaSupport") Boolean multimediaSupport
     );
+
+    @Update("UPDATE meeting_room SET status_name = #{status} WHERE room_id = #{roomId}")
+    void updateRoomStatus(Integer roomId, String status);
 }

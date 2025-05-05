@@ -76,6 +76,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (isBookingExpired(bookingId)) {
+            // 订单已过期，更新状态为"已取消"
+            bookingMapper.updateStatusToCancel(bookingId);
+            // 并释放会议室
+            meetingRoomMapper.updateRoomStatus(booking.getRoomId(), Status.AVAILABLE);
             return Result.error("订单已过期");
         }
 
@@ -130,6 +134,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public boolean isBookingExpired(Integer bookingId) {
         Booking booking = bookingMapper.selectById(bookingId);
+        System.out.println(booking);
         if (booking == null) return true;
 
         // 检查是否超过30分钟未支付
