@@ -91,9 +91,9 @@ public class BookingServiceImpl implements BookingService {
             bookingMapper.updateBooking(booking);
 
             // 更新会议室状态为"已预订"
-            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
-            room.setStatusName(Status.BOOKED);
-            meetingRoomMapper.updateRoom(room);
+//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
+//            room.setStatusName(Status.BOOKED);
+//            meetingRoomMapper.updateRoom(room);
 
             return Result.success(booking);
         } catch (Exception e) {

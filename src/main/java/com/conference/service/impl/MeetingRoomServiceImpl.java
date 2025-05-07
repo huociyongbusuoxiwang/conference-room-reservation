@@ -71,8 +71,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             // 过滤不可用时间段
             List<MeetingRoom> availableRooms = baseRooms.stream()
                     .filter(room -> {
-                        // 状态检查
-                        if (!Status.AVAILABLE.equals(room.getStatusName())) return false;
+                        // 状态检查（这里有问题）
+//                        if (!Status.AVAILABLE.equals(room.getStatusName())) return false;
 
                         // 时间冲突检查
                         return !meetingRoomMapper.hasTimeConflict(
@@ -95,7 +95,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         try {
             // 检查会议室状态
             MeetingRoom room = meetingRoomMapper.findByRoomId(roomId);
-            if (room == null || !Status.AVAILABLE.equals(room.getStatusName())) {
+//            if (room == null || !Status.AVAILABLE.equals(room.getStatusName())) {
+//                return false;
+//            }
+
+            if (room == null) {
                 return false;
             }
 
