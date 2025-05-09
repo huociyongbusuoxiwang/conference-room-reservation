@@ -1,7 +1,6 @@
 package com.conference.entity;
 
 import com.conference.utils.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

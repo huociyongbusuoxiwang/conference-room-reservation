@@ -237,9 +237,9 @@ public class EmployeeController {
         String username = (String) map.get("username");
 
         if (!username.equals("admin")){     // 若此时登录的账户是员工而不是管理员，则判断其是否修改用户名
-            // 若传入的用户名与原来的用户名相同
+            // 若传入的用户名与原来的用户名相同，表示员工只修改其他信息，没有修改username
             if(employee.getUsername().equals(username)){
-                // 防小人不防君子逻辑
+                // 防小人不防君子逻辑 - 适用情况：连续两次修改username
                 // 若checkUsername字段不为空，则表示员工在管理员审核用户名前已经修改过用户名，但是又重新改回原来可以正常使用的用户名
                 if(newEmployee.getCheckUsername() != null) {
                     employee.setStatus(Status.NORMAL_USING);    // 状态重置为正常使用
@@ -256,15 +256,25 @@ public class EmployeeController {
             return Result.success("用户名修改成功，等待管理员审核");
         }
         // 若此时登录的账户是管理员
-        // 检查员工是否修改过用户名，若修改过则checkUsername应该不为空
-        if(!employee.getStatus().equals(Status.NORMAL_USING)){  // 若审核不通过
-            employee.setCheckUsername(null);    // 将checkUsername字段重置为null，表示该用户名审核不通过
-        }else{     // 若审核通过，则将审核通过的checkUsername赋给username字段，同时重置checkUsername字段为null
-            employee.setUsername(newEmployee.getCheckUsername());  // 将checkUsername字段的值赋给username字段
-            employee.setCheckUsername(null);    // 前端admin传入的数据还是会有checkUsername，所以重置checkUsername字段的值
+        // 检查员工是否修改过用户名
+        // 若checkUsername字段为空，则意味着是刚注册的员工；直接审核即可
+        // 不为空，则是已经审核通过的员工申请修改username
+        if(newEmployee.getCheckUsername() != null) {
+            if(employee.getStatus().equals(Status.CHECKING_REJECT)){
+                // 若审核不通过，则对员工所修改的账户进行回档
+                employee.setStatus(Status.NORMAL_USING); // 进行回档 - username保持为修改前，状态重置为正常使用
+                employee.setCheckUsername(null);    // 将checkUsername字段重置为null，表示该用户名审核不通过
+                // 这里就需要前端告知员工，管理员拒绝了其对username的修改申请
+            }else{
+                // 若审核通过，status会在employee中携带，则无需自行赋值
+                // 若审核通过，则将审核通过的checkUsername赋给username字段，同时重置checkUsername字段为null
+                employee.setUsername(newEmployee.getCheckUsername());  // 将checkUsername字段的值赋给username字段
+                employee.setCheckUsername(null);    // 前端admin传入的数据还是会有checkUsername，所以重置checkUsername字段的值
+            }
         }
-        // 情况1：员工修改了用户名，在对上述的checkUsername字段进行操作后更新员工信息
-        // 情况2：若员工没有修改用户名，但是管理员修改了用户名，则上述的checkUsername字段为空，无需审核，直接更新信息
+        // 情况1，新员工注册，直接设置状态即可
+        // 情况2：员工修改了用户名，在对上述的checkUsername字段进行操作后更新员工信息
+        // 情况3：若员工没有修改用户名，但是管理员修改了用户名，则上述的checkUsername字段为空，无需审核，直接更新信息
         employeeService.updateEmployee(employee); // 更新员工信息
         return Result.success("信息已更新");
     }

@@ -226,10 +226,11 @@ public class CustomerController {
         String username = (String) map.get("username");
 
         if (!username.equals("admin")){     // 若此时登录的账户是用户而不是管理员，则判断其是否修改用户名
-            // 若传入的用户名与原来的用户名相同
+            // 若传入的用户名与原来的用户名相同，表示客户只修改了其他信息，没有修改username
             if(customer.getUsername().equals(username)){
+                // 防小人不防君子逻辑 - 适用情况：连续两次修改username
                 // 若checkUsername字段不为空，则表示用户在管理员审核用户名前已经修改过用户名，但是又重新改回原来可以正常使用的用户名
-                if(newCustomer.getCheckUsername() != null) {   // 防小人不防君子逻辑
+                if(newCustomer.getCheckUsername() != null) {
                     customer.setStatus(Status.NORMAL_USING);    // 状态重置为正常使用
                     customer.setCheckUsername(null);    // 将checkUsername字段重置为null
                 }
@@ -244,15 +245,25 @@ public class CustomerController {
             return Result.success("用户名修改成功，等待管理员审核");
         }
         // 若此时登录的账户是管理员
-        // 检查用户是否修改过用户名，若修改过则checkUsername应该不为空
-        if(!customer.getStatus().equals(Status.NORMAL_USING)){  // 若审核不通过
-            customer.setCheckUsername(null);    // 将checkUsername字段重置为null，表示该用户名审核不通过
-        }else{  // 若审核通过，则将审核通过的checkUsername赋给username字段，同时重置checkUsername字段为null
-            customer.setUsername(newCustomer.getCheckUsername());  // 将checkUsername字段的值赋给username字段
-            customer.setCheckUsername(null);    // 前端admin传入的数据还是会有checkUsername，所以重置checkUsername字段的值
+        // 检查客户是否修改过用户名
+        // 若checkUsername字段为空，则意味着是刚注册的客户；直接审核即可
+        // 不为空，则是已经审核通过的客户申请修改username
+        if(newCustomer.getCheckUsername() != null) {
+            if(customer.getStatus().equals(Status.CHECKING_REJECT)){
+                // 若审核不通过，则对客户所修改的账户进行回档
+                customer.setStatus(Status.NORMAL_USING); // 进行回档 - username保持为修改前，状态重置为正常使用
+                customer.setCheckUsername(null);    // 将checkUsername字段重置为null，表示该用户名审核不通过
+                // 这里就需要前端告知客户，管理员拒绝了其对username的修改申请
+            }else{
+                // 若审核通过，status会在customer中携带，则无需自行赋值
+                // 若审核通过，则将审核通过的checkUsername赋给username字段，同时重置checkUsername字段为null
+                customer.setUsername(newCustomer.getCheckUsername());  // 将checkUsername字段的值赋给username字段
+                customer.setCheckUsername(null);    // 前端admin传入的数据还是会有checkUsername，所以重置checkUsername字段的值
+            }
         }
-        // 情况1：用户修改了用户名，在对上述的checkUsername字段进行操作后更新用户信息
-        // 情况2：若用户没有修改用户名，但是管理员修改了用户名，则上述的checkUsername字段为空，无需审核，直接更新信息
+        // 情况1，新客户注册，直接设置状态即可
+        // 情况2：用户修改了用户名，在对上述的checkUsername字段进行操作后更新用户信息
+        // 情况3：若用户没有修改用户名，但是管理员修改了用户名，则上述的checkUsername字段为空，无需审核，直接更新信息
         customerService.updateCustomer(customer); // 更新客户信息
         return Result.success("信息已更新");
     }
