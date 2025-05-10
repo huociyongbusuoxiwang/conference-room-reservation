@@ -118,7 +118,7 @@ public class BookingCancellationServiceImpl implements BookingCancellationServic
         cancellation.setApprovedAt(LocalDateTime.now());
         cancellation.setIsVerified(verificationStatus);
 
-        System.out.println(cancellation);
+//        System.out.println(cancellation);
 
         // 5. 更新数据库
         boolean success = bookingCancellationMapper.updateVerificationStatus(cancellation) > 0;

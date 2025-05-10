@@ -29,12 +29,12 @@ public class BookingController {
     private MeetingRoomService meetingRoomService;
 
     /**
-     * 查询客户所有预订记录
+     * 查询客户所有预订记录（用户端）
      * url地址：booking/list
      * 请求方式：GET
      * 请求参数：
      * {
-     *     "customerId":客户ID (从登录态获取)
+     *     "customerId":客户ID
      * }
      * 响应数据：
      * {
@@ -62,6 +62,41 @@ public class BookingController {
         Result result = bookingService.listByCustomerId(customerId);
         return result;
     }
+
+    /**
+     * 查询客户所有预订记录（员工端）
+     * url地址：booking/list
+     * 请求方式：GET
+     * 请求参数：
+     * {
+     *     "customerId":客户ID (从登录态获取)
+     * }
+     * 响应数据：
+     * {
+     *     "code": 0,
+     *     "message":"success",
+     *     "data":[
+     *         {
+     *             "bookingId": 1,
+     *             "roomName": "会议室A",
+     *             "bookingDate": "2025-05-01",
+     *             "startTime": "09:00",
+     *             "endTime": "12:00",
+     *             "totalPrice": 600.00,
+     *             "statusName": "已支付"
+     *         },
+     *         ...
+     *     ]
+     * }
+     */
+    @GetMapping("list_forEmployee")
+    public Result<List<Booking>> listBookingsforEmployee(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate bookingDate,
+                                                         @RequestParam Integer startHour,
+                                                         @RequestParam Integer endHour) {
+        Result result = bookingService.listByCustomerIdforemployee(bookingDate, startHour, endHour);
+        return result;
+    }
+
 
     /**
      * 根据条件筛选可用会议室

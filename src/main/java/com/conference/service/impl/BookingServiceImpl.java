@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -167,6 +168,13 @@ public class BookingServiceImpl implements BookingService {
             return Result.error("订单不存在");
         }
         return Result.success(booking);
+    }
+
+    @Override
+    public Result<List<Booking>> listByCustomerIdforemployee(LocalDate bookingDate, Integer startHour, Integer endHour) {
+        List<Booking> bookings = bookingMapper.selectbyConditions(bookingDate, startHour, endHour);
+        System.out.println(bookings);
+        return Result.success(bookings);
     }
 
 
