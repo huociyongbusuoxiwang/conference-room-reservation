@@ -17,6 +17,7 @@ public interface BookingService {
 
     Result<Booking> getBookingDetail(Integer bookingId);
 
-    @Scheduled(fixedRate = 60000) // 每分钟检查一次
-    void checkAndReleaseExpiredBookings();
+
+//    @Scheduled(fixedRate = 60000) // 每分钟检查一次
+//    void checkAndReleaseExpiredBookings();
 }

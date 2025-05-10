@@ -17,6 +17,9 @@ public class BookingCancellation {
     @NotNull
     private Integer bookingId; // 被取消的预订订单的编号
 
+    @NotNull
+    private Integer customerId; // 客户编号
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime cancellationDate;// 取消预订的日期

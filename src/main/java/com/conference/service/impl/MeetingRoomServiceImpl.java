@@ -72,7 +72,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             List<MeetingRoom> availableRooms = baseRooms.stream()
                     .filter(room -> {
                         // 状态检查（这里有问题）
-//                        if (!Status.AVAILABLE.equals(room.getStatusName())) return false;
+                        if (Status.UNDER_REPAIR.equals(room.getStatusName())) return false;
 
                         // 时间冲突检查
                         return !meetingRoomMapper.hasTimeConflict(
@@ -95,11 +95,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         try {
             // 检查会议室状态
             MeetingRoom room = meetingRoomMapper.findByRoomId(roomId);
-//            if (room == null || !Status.AVAILABLE.equals(room.getStatusName())) {
-//                return false;
-//            }
-
-            if (room == null) {
+            if (room == null || !Status.AVAILABLE.equals(room.getStatusName())) {
                 return false;
             }
 
@@ -110,8 +106,26 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
                     startHour,
                     endHour
             );
+
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public Result updateRoomStatus(Integer roomId, String statusName) {
+        try {
+            // 检查会议室是否存在
+            MeetingRoom room = meetingRoomMapper.findByRoomId(roomId);
+            if (room == null) {
+                return Result.error("会议室不存在");
+            }
+
+            // 更新会议室状态
+            meetingRoomMapper.updateRoomStatus(roomId, statusName);
+            return Result.success("会议室状态更新成功");
+        } catch (Exception e) {
+            return Result.error("更新会议室状态失败: " + e.getMessage());
         }
     }
 }

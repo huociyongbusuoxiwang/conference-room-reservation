@@ -25,4 +25,6 @@ public interface MeetingRoomService {
     Result findAvailableRooms(LocalDate bookingDate, Integer startHour, Integer endHour, Integer capacity, Boolean multimediaSupport);
 
     boolean isRoomAvailable(Integer roomId, LocalDate bookingDate, Integer startHour, Integer endHour);
+
+    Result updateRoomStatus(Integer roomId, String statusName);
 }

@@ -32,28 +32,74 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Result createBooking(Booking booking) {
+//        try {
+//            // 计算总价格
+//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
+//            if (room == null) {
+//                return Result.error("会议室不存在");
+//            }
+//
+//            // 检查会议室状态
+//            if (Status.UNDER_REPAIR.equals(room.getStatusName())) {
+//                return Result.error("会议室正在维修中，暂不可预订");
+//            }
+//
+//            if (!Status.AVAILABLE.equals(room.getStatusName())) {
+//                return Result.error("会议室当前不可用");
+//            }
+//
+//            booking.setRoomName(room.getRoomName());
+//            booking.setTotalPrice(room.getHourlyRate() * booking.getTotalHours());
+//            booking.setStatusName(Status.UNPAID);
+//            booking.setPaymentStatus(false);
+//            booking.setCreateTime(LocalDateTime.now());
+//
+//            // 保存预订记录
+//            bookingMapper.insert(booking);
+//
+//            // 更新会议室状态为"已锁定"
+////            room.setStatusName(Status.UNAVAILABLE);
+////            meetingRoomMapper.updateRoom(room);
+//
+//            return Result.success(booking);
+//        } catch (Exception e) {
+//            throw new RuntimeException("创建预订失败", e);
+//        }
+
         try {
-            // 计算总价格
+            // 1. 获取会议室信息
             MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
             if (room == null) {
                 return Result.error("会议室不存在");
             }
 
+            // 2. 检查会议室状态（包括维修状态）
+            if (Status.UNDER_REPAIR.equals(room.getStatusName())) {
+                return Result.error("会议室正在维修中，暂不可预订");
+            }
+            if (!Status.AVAILABLE.equals(room.getStatusName())) {
+                return Result.error("会议室当前不可用");
+            }
+
+            // 3. 检查时间冲突
+            if (meetingRoomMapper.hasTimeConflict(booking.getRoomId(), booking.getBookingDate(),
+                    booking.getStartTime().getHour(), booking.getEndTime().getHour())) {
+                return Result.error("该时间段会议室已被预订");
+            }
+
+            // 4. 设置预订信息
+            booking.setRoomName(room.getRoomName());
             booking.setTotalPrice(room.getHourlyRate() * booking.getTotalHours());
             booking.setStatusName(Status.UNPAID);
             booking.setPaymentStatus(false);
             booking.setCreateTime(LocalDateTime.now());
 
-            // 保存预订记录
+            // 5. 保存预订记录
             bookingMapper.insert(booking);
-
-            // 更新会议室状态为"已锁定"
-            room.setStatusName(Status.UNAVAILABLE);
-            meetingRoomMapper.updateRoom(room);
 
             return Result.success(booking);
         } catch (Exception e) {
-            throw new RuntimeException("创建预订失败", e);
+            throw new RuntimeException("创建预订失败，请稍后重试");
         }
     }
 
@@ -88,12 +134,9 @@ public class BookingServiceImpl implements BookingService {
             // 更新订单状态
             booking.setStatusName(Status.PAID);
             booking.setPaymentStatus(true);
+            booking.setRoomStatus(Status.BOOKED);
             bookingMapper.updateBooking(booking);
 
-            // 更新会议室状态为"已预订"
-//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
-//            room.setStatusName(Status.BOOKED);
-//            meetingRoomMapper.updateRoom(room);
 
             return Result.success(booking);
         } catch (Exception e) {
@@ -126,6 +169,7 @@ public class BookingServiceImpl implements BookingService {
         return Result.success(booking);
     }
 
+
     /**
      * 检查预订订单是否已过期（超过30分钟未支付）
      * @param bookingId 预订订单ID
@@ -147,21 +191,21 @@ public class BookingServiceImpl implements BookingService {
      * 定时任务：每分钟检查并释放过期未支付的预订
      * 自动将过期订单状态改为"已取消"，并释放关联的会议室
      */
-    @Override
-    @Scheduled(fixedRate = 60000) // 每分钟检查一次
-    public void checkAndReleaseExpiredBookings() {
-        List<Booking> expiredBookings = bookingMapper.selectExpiredUnpaidBookings(
-                LocalDateTime.now().minusMinutes(30));
-
-        for (Booking booking : expiredBookings) {
-            // 更新订单状态为"已取消"
-            booking.setStatusName(Status.CANCEL);
-            bookingMapper.updateBooking(booking);
-
-            // 释放会议室
-            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
-            room.setStatusName(Status.AVAILABLE);
-            meetingRoomMapper.updateRoom(room);
-        }
-    }
+//    @Override
+//    @Scheduled(fixedRate = 60000) // 每分钟检查一次
+//    public void checkAndReleaseExpiredBookings() {
+//        List<Booking> expiredBookings = bookingMapper.selectExpiredUnpaidBookings(
+//                LocalDateTime.now().minusMinutes(30));
+//
+//        for (Booking booking : expiredBookings) {
+//            // 更新订单状态为"已取消"
+//            booking.setStatusName(Status.CANCEL);
+//            bookingMapper.updateBooking(booking);
+//
+//            // 释放会议室
+//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
+//            room.setStatusName(Status.AVAILABLE);
+//            meetingRoomMapper.updateRoom(room);
+//        }
+//    }
 }

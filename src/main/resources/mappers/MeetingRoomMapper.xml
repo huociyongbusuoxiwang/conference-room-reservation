@@ -69,6 +69,7 @@
         WHERE
         b.room_id = #{roomId}
         AND DATE(b.booking_date) = #{bookingDate}
+        AND b.status_name NOT IN ('已取消', '已退款', '已完成')
         AND (
         (#{startHour} BETWEEN HOUR(b.start_time) AND HOUR(b.end_time)-1)
         OR (#{endHour}-1 BETWEEN HOUR(b.start_time) AND HOUR(b.end_time)-1)

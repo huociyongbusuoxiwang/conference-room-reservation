@@ -1,11 +1,13 @@
 package com.conference.controller;
 
 import com.conference.entity.Booking;
+import com.conference.entity.BookingCancellation;
 import com.conference.entity.MeetingRoom;
 import com.conference.service.BookingService;
 import com.conference.service.MeetingRoomService;
 import com.conference.utils.Result;
 import com.conference.utils.Status;
+import com.conference.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("booking")
@@ -52,7 +55,10 @@ public class BookingController {
      * }
      */
     @GetMapping("list")
-    public Result<List<Booking>> listBookings(@RequestParam Integer customerId) {
+    public Result<List<Booking>> listBookings() {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer customerId = (Integer) map.get("id");
+
         Result result = bookingService.listByCustomerId(customerId);
         return result;
     }
@@ -128,44 +134,41 @@ public class BookingController {
      *     }
      * }
      */
-    @PostMapping
+    @PostMapping("createBooking")
     public Result createBooking(
             @RequestParam Integer roomId,
-            @RequestParam Integer customerId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate bookingDate,
             @RequestParam Integer startHour,
             @RequestParam Integer endHour) {
 
-        // 验证预订日期是否在60天内
+        // 基本时间验证（纯参数校验，不涉及业务逻辑）
         if (bookingDate.isAfter(LocalDate.now().plusDays(60))) {
             return Result.error("最多只能提前60天预订会议室");
         }
-
-        // 验证时间范围是否合法(8:00-21:00)
+        if (bookingDate.isBefore(LocalDate.now())) {
+            return Result.error("不能预订过去的日期");
+        }
         if (startHour < 8 || endHour > 21 || startHour >= endHour) {
             return Result.error("会议室可使用时间为每日8:00-21:00，且结束时间必须晚于开始时间");
         }
+        if (bookingDate.isEqual(LocalDate.now()) && startHour < LocalTime.now().getHour()) {
+            return Result.error("当天预订的开始时间不能早于当前时间");
+        }
 
-        // 构建Booking实体
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer customerId = (Integer) map.get("id");
+
+        // 构建Booking实体（只设置基本属性）
         Booking booking = new Booking();
         booking.setRoomId(roomId);
         booking.setCustomerId(customerId);
-        booking.setBookingDate(bookingDate.atStartOfDay());
-        booking.setStartTime(LocalDateTime.of(bookingDate, LocalTime.of(startHour, 0)));
-        booking.setEndTime(LocalDateTime.of(bookingDate, LocalTime.of(endHour, 0)));
+        booking.setBookingDate(bookingDate);
+        booking.setStartTime(LocalTime.of(startHour, 0));
+        booking.setEndTime(LocalTime.of(endHour, 0));
         booking.setTotalHours(endHour - startHour);
 
-        // 检查会议室是否可用`
-        if (!meetingRoomService.isRoomAvailable(
-                roomId,
-                bookingDate,
-                startHour,
-                endHour)) {
-            return Result.error("该时间段会议室已被预订");
-        }
-
-        Result result = bookingService.createBooking(booking);
-        return result;
+        // 调用Service层处理核心业务逻辑
+        return bookingService.createBooking(booking);
     }
 
     /**
@@ -189,11 +192,6 @@ public class BookingController {
      */
     @PostMapping("pay")
     public Result payBooking(@RequestParam Integer bookingId, @RequestParam String paymentMethod) {
-        // 检查订单是否已过期
-//        if (bookingService.isBookingExpired(bookingId)) {
-//            return Result.error("订单已过期，请重新预订");
-//        }
-
         Result result = bookingService.payBooking(bookingId, paymentMethod);
         return result;
     }
@@ -229,4 +227,23 @@ public class BookingController {
         Result result = bookingService.getBookingDetail(bookingId);
         return result;
     }
+
+
+    /**
+     * 更改会议室状态（员工端使用）
+     * 在用户开始使用会议室之后，员工手动更新会议室状态为"使用中"
+     * 在用户结束使用会议室之后，员工检查会议室并手动更新会议室状态为"空闲中"或者"维护中“
+     */
+    @PostMapping("updateRoomStatus")
+    public Result updateRoomStatus(@RequestParam Integer roomId, @RequestParam String statusName) {
+        // 验证状态是否合法
+        if (!Status.UNDER_USING.equals(statusName) && !Status.AVAILABLE.equals(statusName) && !Status.UNDER_REPAIR.equals(statusName)) {
+            return Result.error("无效的会议室状态");
+        }
+
+        // 更新会议室状态
+        Result result = meetingRoomService.updateRoomStatus(roomId, statusName);
+        return result;
+    }
+
 }

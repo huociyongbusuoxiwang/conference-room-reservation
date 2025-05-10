@@ -15,8 +15,8 @@
         total_price,
         status_name,
         payment_status,
-        create_time,
-        booking_date  <!-- 添加缺失的字段 -->
+        created_time,
+        booking_date
         ) VALUES (
         #{roomId},
         #{customerId},
@@ -27,19 +27,57 @@
         #{statusName},
         #{paymentStatus},
         #{createTime},
-        #{bookingDate}  <!-- 传入参数 -->
+        #{bookingDate}
         )
     </insert>
 
     <select id="selectByCustomerId" resultType="com.conference.entity.Booking">
-        SELECT * FROM booking
-        WHERE customer_id = #{customerId}
-        ORDER BY booking_date DESC
+        SELECT
+        b.booking_id AS bookingId,
+        b.room_id AS roomId,
+        b.customer_id AS customerId,
+        m.room_name AS roomName,
+        b.booking_date AS bookingDate,
+        b.start_time AS startTime,
+        b.end_time AS endTime,
+        b.total_hours AS totalHours,
+        b.total_price AS totalPrice,
+        b.status_name AS statusName,
+        b.room_status AS roomStatus,
+        b.payment_status AS paymentStatus,
+        b.created_time AS createTime
+        FROM
+        booking b
+        JOIN
+        meeting_room m ON b.room_id = m.room_id
+        WHERE
+        b.customer_id = #{customerId}
+        ORDER BY
+        b.booking_date DESC
     </select>
 
     <select id="selectById" resultType="com.conference.entity.Booking">
-        SELECT * FROM booking
-        WHERE booking_id = #{bookingId}
+        SELECT
+        b.booking_id AS bookingId,
+        b.room_id AS roomId,
+        b.customer_id AS customerId,
+        m.room_name AS roomName,
+        b.booking_date AS bookingDate,
+        b.start_time AS startTime,
+        b.end_time AS endTime,
+        b.total_hours AS totalHours,
+        b.total_price AS totalPrice,
+        b.status_name AS statusName,
+        b.room_status AS roomStatus,
+        b.payment_status AS paymentStatus,
+        b.created_time AS createTime
+        FROM
+        booking b
+        JOIN
+        meeting_room m ON b.room_id = m.room_id
+        WHERE b.booking_id = #{bookingId}
+        ORDER BY
+        b.booking_date DESC
     </select>
 
     <update id="updateBooking" parameterType="com.conference.entity.Booking">
@@ -49,7 +87,8 @@
             <if test="paymentStatus != null">payment_status = #{paymentStatus},</if>
             <if test="totalPrice != null">total_price = #{totalPrice},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
-            <if test="endTime != null">end_time = #{endTime}</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="roomStatus != null">room_status = #{roomStatus}</if>
         </set>
         WHERE booking_id = #{bookingId}
     </update>

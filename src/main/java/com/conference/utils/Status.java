@@ -20,7 +20,7 @@ public class Status {
     // 会议室状态
     public static final String AVAILABLE = "空闲中";
     public static final String UNAVAILABLE = "已锁定";
-    public static final String BOOKED = "已被预订";
+    public static final String BOOKED = "已预订";
     public static final String UNDER_USING = "使用中";
     public static final String UNDER_REPAIR = "维护中";
 
