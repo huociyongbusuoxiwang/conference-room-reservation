@@ -1,6 +1,7 @@
 package com.conference.controller;
 
 import com.conference.entity.Customer;
+import com.conference.entity.dto.CustomerDTO;
 import com.conference.utils.Status;
 import com.conference.service.CustomerService;
 import com.conference.utils.JwtUtil;
@@ -141,7 +142,16 @@ public class CustomerController {
     @GetMapping("customerDetailById")
     public Result customerDetailById(Integer customerId){
         Customer customer = customerService.findByCustomerId(customerId);
-        return Result.success(customer);
+        if (customer == null) return Result.error("客户不存在");
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", customer.getCustomerId());
+        claims.put("username", customer.getUsername());
+        String token = JwtUtil.genToken(claims);
+
+        CustomerDTO response = new CustomerDTO(customer, token);
+
+        return Result.success(response);
     }
 
     /** 根据客户用户名查询客户信息

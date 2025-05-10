@@ -1,6 +1,7 @@
 package com.conference.controller;
 
 import com.conference.entity.Employee;
+import com.conference.entity.dto.EmployeeDTO;
 import com.conference.utils.Status;
 import com.conference.service.EmployeeService;
 import com.conference.utils.JwtUtil;
@@ -146,7 +147,15 @@ public class EmployeeController {
     @GetMapping("employeeDetailById")
     public Result employeeDetailById(Integer employeeId){
         Employee employee = employeeService.findByEmployeeId(employeeId);
-        return Result.success(employee);
+        if (employee == null) return Result.error("员工不存在");
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", employee.getEmployeeId());
+        claims.put("username", employee.getUsername());
+        String token = JwtUtil.genToken(claims);
+
+        EmployeeDTO response = new EmployeeDTO(employee, token);
+        return Result.success(response);
     }
 
     /** 根据员工用户名查询员工信息
@@ -235,6 +244,9 @@ public class EmployeeController {
         // 获取当前登录客户的用户名，可能是管理员，也可能是员工
         Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
+        System.out.println("============================");
+        System.out.println("username = " + username);
+        System.out.println("============================");
 
         if (!username.equals("admin")){     // 若此时登录的账户是员工而不是管理员，则判断其是否修改用户名
             // 若传入的用户名与原来的用户名相同，表示员工只修改其他信息，没有修改username
