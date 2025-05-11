@@ -65,4 +65,9 @@ public interface BookingMapper {
             "WHERE booking_id = #{bookingId}" +
             "</script>")
     int updateBookingStatus(Booking booking);
+
+    @Select("SELECT b.*, m.room_name " +
+            "FROM booking b " +
+            "LEFT JOIN meeting_room m ON b.room_id = m.room_id")
+    List<Booking> selectAllBookings();
 }

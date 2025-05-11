@@ -108,4 +108,14 @@ public class RepairServiceImpl implements RepairService {
             return Result.error("获取报修记录失败: " + e.getMessage());
         }
     }
+
+    @Override
+    public Result<List<Repair>> getRepairs() {
+        try {
+            List<Repair> repairs = repairMapper.selectAll();
+            return Result.success(repairs);
+        } catch (Exception e) {
+            return Result.error("获取报修记录失败: " + e.getMessage());
+        }
+    }
 }

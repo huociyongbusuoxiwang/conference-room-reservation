@@ -7,6 +7,8 @@ import com.conference.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("repair")
 public class RepairController {
@@ -45,6 +47,15 @@ public class RepairController {
     @GetMapping("/list/room")
     public Result getRepairsByRoom(@RequestParam Integer roomId) {
         return repairService.getRepairsByRoom(roomId);
+    }
+
+    /**
+     * 获取报修列表
+     */
+    @GetMapping("/list")
+    public Result<List<Repair>> getRepairs() {
+        Result repairs = repairService.getRepairs();
+        return repairs;
     }
 
 }

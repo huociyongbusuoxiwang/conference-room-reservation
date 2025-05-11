@@ -27,4 +27,7 @@ public interface RepairMapper {
 
     @Select("SELECT * FROM repair WHERE status = #{status} ORDER BY report_time DESC")
     List<Repair> selectByStatus(String status);
+
+    @Select("SELECT * FROM repair ORDER BY report_time DESC")
+    List<Repair> selectAll();
 }

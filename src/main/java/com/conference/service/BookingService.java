@@ -18,9 +18,11 @@ public interface BookingService {
 
     Result<Booking> getBookingDetail(Integer bookingId);
 
-    Result<List<Booking>> listByCustomerIdforemployee(LocalDate bookingDate, Integer startHour, Integer endHour);
+    Result<List<Booking>> listByConditionforemployee(LocalDate bookingDate, Integer startHour, Integer endHour);
 
     Result updateBookingStatus(Booking booking);
+
+    Result<List<Booking>> listBookingsForEmployee();
 
 
 //    @Scheduled(fixedRate = 60000) // 每分钟检查一次
