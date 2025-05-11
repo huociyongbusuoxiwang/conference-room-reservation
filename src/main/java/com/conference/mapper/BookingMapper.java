@@ -24,7 +24,10 @@ public interface BookingMapper {
     @Update("UPDATE booking SET status_name = '已取消' WHERE booking_id = #{bookingId}")
     void updateStatusToCancel(Integer bookingId);
 
-    @Update("UPDATE booking SET status_name = '已退款' AND room_status = '已取消' WHERE booking_id = #{bookingId}")
+    @Update("UPDATE booking SET " +
+            "status_name = '已退款', " +
+            "room_status = '已取消' " +
+            "WHERE booking_id = #{bookingId}")
     void updateStatusToRefund(Integer bookingId);
 
     @Select("SELECT * FROM booking WHERE status_name = #{status} AND start_time <= #{now} AND status_name != '使用中'")

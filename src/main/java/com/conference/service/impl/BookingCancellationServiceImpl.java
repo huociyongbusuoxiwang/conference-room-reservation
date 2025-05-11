@@ -124,7 +124,7 @@ public class BookingCancellationServiceImpl implements BookingCancellationServic
         boolean success = bookingCancellationMapper.updateVerificationStatus(cancellation) > 0;
 
         // 6. 如果审核通过，执行退款和状态更新
-        if (success && verificationStatus != 0) {
+        if (success && verificationStatus != 0 && verificationStatus != 2) {
             bookingMapper.updateStatusToRefund(cancellation.getBookingId());
         }
 
