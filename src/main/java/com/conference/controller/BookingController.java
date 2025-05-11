@@ -281,4 +281,21 @@ public class BookingController {
         return result;
     }
 
+
+    /**
+     * 更新预订状态（员工端使用）
+     */
+    @PutMapping("updateBooking")
+    public Result updateBooking(@RequestBody Booking booking) {
+        if (booking.getBookingId() == null) {
+            return Result.error("预订ID不能为空");
+        }
+
+        // 更新预订状态
+        Result result = bookingService.updateBookingStatus(booking);
+        return result;
+    }
+
+
+
 }

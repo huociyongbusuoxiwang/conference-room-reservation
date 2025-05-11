@@ -20,6 +20,8 @@ public interface BookingService {
 
     Result<List<Booking>> listByCustomerIdforemployee(LocalDate bookingDate, Integer startHour, Integer endHour);
 
+    Result updateBookingStatus(Booking booking);
+
 
 //    @Scheduled(fixedRate = 60000) // 每分钟检查一次
 //    void checkAndReleaseExpiredBookings();

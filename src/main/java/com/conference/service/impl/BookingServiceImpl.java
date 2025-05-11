@@ -177,6 +177,23 @@ public class BookingServiceImpl implements BookingService {
         return Result.success(bookings);
     }
 
+    @Override
+    public Result updateBookingStatus(Booking booking) {
+
+        // 1. 检查预订记录是否存在
+        Booking existingBooking = bookingMapper.selectById(booking.getBookingId());
+        if (existingBooking == null) {
+            return Result.error("预订记录不存在");
+        }
+        // 2. 更新预订状态
+        int updated = bookingMapper.updateBookingStatus(booking);
+        if (updated <= 0) {
+            return Result.error("更新预订状态失败");
+        }
+
+        return Result.success("更新预订状态成功");
+    }
+
 
     /**
      * 检查预订订单是否已过期（超过30分钟未支付）
