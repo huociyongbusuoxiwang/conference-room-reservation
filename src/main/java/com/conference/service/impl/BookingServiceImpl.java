@@ -33,40 +33,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Result createBooking(Booking booking) {
-//        try {
-//            // 计算总价格
-//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
-//            if (room == null) {
-//                return Result.error("会议室不存在");
-//            }
-//
-//            // 检查会议室状态
-//            if (Status.UNDER_REPAIR.equals(room.getStatusName())) {
-//                return Result.error("会议室正在维修中，暂不可预订");
-//            }
-//
-//            if (!Status.AVAILABLE.equals(room.getStatusName())) {
-//                return Result.error("会议室当前不可用");
-//            }
-//
-//            booking.setRoomName(room.getRoomName());
-//            booking.setTotalPrice(room.getHourlyRate() * booking.getTotalHours());
-//            booking.setStatusName(Status.UNPAID);
-//            booking.setPaymentStatus(false);
-//            booking.setCreateTime(LocalDateTime.now());
-//
-//            // 保存预订记录
-//            bookingMapper.insert(booking);
-//
-//            // 更新会议室状态为"已锁定"
-////            room.setStatusName(Status.UNAVAILABLE);
-////            meetingRoomMapper.updateRoom(room);
-//
-//            return Result.success(booking);
-//        } catch (Exception e) {
-//            throw new RuntimeException("创建预订失败", e);
-//        }
-
         try {
             // 1. 获取会议室信息
             MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
@@ -153,6 +119,38 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Result<List<Booking>> listByCustomerId(Integer customerId) {
         List<Booking> bookings = bookingMapper.selectByCustomerId(customerId);
+        LocalDateTime now = LocalDateTime.now();
+        for (Booking booking : bookings) {
+            // 跳过已取消或已完成的订单
+            if ("已取消".equals(booking.getStatusName()) ||
+                    "已完成".equals(booking.getStatusName())) {
+                continue;
+            }
+
+            LocalDateTime bookingDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getStartTime()
+            );
+
+            LocalDateTime endDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getEndTime()
+            );
+
+            // 规则1: 会议已结束 -> 标记为已完成
+            if (now.isAfter(endDateTime)) {
+                booking.setStatusName(Status.FINISH);
+                booking.setRoomStatus(Status.FINISH);
+                bookingMapper.updateBooking(booking);
+            }
+
+            // 规则2: 会议正在进行中 -> 标记为使用中
+            else if (now.isAfter(bookingDateTime) && now.isBefore(endDateTime)) {
+                booking.setStatusName(Status.UNDER_USING);
+                booking.setRoomStatus(Status.UNDER_USING);
+                bookingMapper.updateBooking(booking);
+            }
+        }
         return Result.success(bookings);
     }
 
@@ -173,7 +171,38 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Result<List<Booking>> listByConditionforemployee(LocalDate bookingDate, Integer startHour, Integer endHour) {
         List<Booking> bookings = bookingMapper.selectbyConditions(bookingDate, startHour, endHour);
-        System.out.println(bookings);
+        LocalDateTime now = LocalDateTime.now();
+        for (Booking booking : bookings) {
+            // 跳过已取消或已完成的订单
+            if ("已取消".equals(booking.getStatusName()) ||
+                    "已完成".equals(booking.getStatusName())) {
+                continue;
+            }
+
+            LocalDateTime bookingDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getStartTime()
+            );
+
+            LocalDateTime endDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getEndTime()
+            );
+
+            // 规则1: 会议已结束 -> 标记为已完成
+            if (now.isAfter(endDateTime)) {
+                booking.setStatusName(Status.FINISH);
+                booking.setRoomStatus(Status.FINISH);
+                bookingMapper.updateBooking(booking);
+            }
+
+            // 规则2: 会议正在进行中 -> 标记为使用中
+            else if (now.isAfter(bookingDateTime) && now.isBefore(endDateTime)) {
+                booking.setStatusName(Status.UNDER_USING);
+                booking.setRoomStatus(Status.UNDER_USING);
+                bookingMapper.updateBooking(booking);
+            }
+        }
         return Result.success(bookings);
     }
 
@@ -198,6 +227,38 @@ public class BookingServiceImpl implements BookingService {
     public Result<List<Booking>> listBookingsForEmployee() {
         // 1. 查询所有预订记录
         List<Booking> bookings = bookingMapper.selectAllBookings(); // null表示查询所有客户的预订记录
+        LocalDateTime now = LocalDateTime.now();
+        for (Booking booking : bookings) {
+            // 跳过已取消或已完成的订单
+            if ("已取消".equals(booking.getStatusName()) ||
+                    "已完成".equals(booking.getStatusName())) {
+                continue;
+            }
+
+            LocalDateTime bookingDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getStartTime()
+            );
+
+            LocalDateTime endDateTime = LocalDateTime.of(
+                    booking.getBookingDate(),
+                    booking.getEndTime()
+            );
+
+            // 规则1: 会议已结束 -> 标记为已完成
+            if (now.isAfter(endDateTime)) {
+                booking.setStatusName(Status.FINISH);
+                booking.setRoomStatus(Status.FINISH);
+                bookingMapper.updateBooking(booking);
+            }
+
+            // 规则2: 会议正在进行中 -> 标记为使用中
+            else if (now.isAfter(bookingDateTime) && now.isBefore(endDateTime)) {
+                booking.setStatusName(Status.UNDER_USING);
+                booking.setRoomStatus(Status.UNDER_USING);
+                bookingMapper.updateBooking(booking);
+            }
+        }
         return Result.success(bookings);
     }
 
@@ -218,26 +279,4 @@ public class BookingServiceImpl implements BookingService {
                 && Status.UNPAID.equals(booking.getStatusName());
     }
 
-
-    /**
-     * 定时任务：每分钟检查并释放过期未支付的预订
-     * 自动将过期订单状态改为"已取消"，并释放关联的会议室
-     */
-//    @Override
-//    @Scheduled(fixedRate = 60000) // 每分钟检查一次
-//    public void checkAndReleaseExpiredBookings() {
-//        List<Booking> expiredBookings = bookingMapper.selectExpiredUnpaidBookings(
-//                LocalDateTime.now().minusMinutes(30));
-//
-//        for (Booking booking : expiredBookings) {
-//            // 更新订单状态为"已取消"
-//            booking.setStatusName(Status.CANCEL);
-//            bookingMapper.updateBooking(booking);
-//
-//            // 释放会议室
-//            MeetingRoom room = meetingRoomMapper.findByRoomId(booking.getRoomId());
-//            room.setStatusName(Status.AVAILABLE);
-//            meetingRoomMapper.updateRoom(room);
-//        }
-//    }
 }
